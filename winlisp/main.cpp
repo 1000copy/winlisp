@@ -1,5 +1,6 @@
 #include <windows.h>
 #include "..\lisp\lisp.h"
+#include "metric.h"
 cell proc_drawtext(const cells& c);
 cell proc_app(const cells& c);
 cell proc_register(const cells& c);
@@ -42,9 +43,9 @@ cell proc_drawtext(const cells& c)
     rect.bottom = bottom;//100;
     DrawText(list[n], (LPCSTR)(base.c_str()), -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
     return cell(String, base);
-}
+}void onpaint(HWND hwnd);
 cell proc_paint1(const cells& c) {
-
+    
     long n0(atol(c[0].val.c_str()));
     long n1(atol(c[1].val.c_str()));
     std::string str(c[2].val.c_str());
@@ -54,7 +55,9 @@ cell proc_paint1(const cells& c) {
     std::ostringstream stringStream;
     HWND hwnd = hwnds[n0];
     if (n1 == 15) {//WM_PAINT
-
+        onpaint_metrics(hwnd); return cell(Number, "0");
+        //onpaint(hwnd); return cell(Number, "0");
+        // for (paint str)
         hdc = BeginPaint(hwnd, &ps);
         GetClientRect(hwnd, &rect);
         DrawText(hdc, str.c_str(), -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);

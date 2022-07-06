@@ -141,9 +141,11 @@
   <ItemGroup>
     <ClCompile Include="..\lisp\lisp.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="metrics.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lisp\lisp.h" />
+    <ClInclude Include="metric.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
