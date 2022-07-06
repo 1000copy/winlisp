@@ -1,3 +1,6 @@
+#include <fstream>
+#include <streambuf>
+
 #include "lisp.h"
 environment global_env;
 
@@ -13,6 +16,10 @@ void repl(const std::string& prompt, environment* env)
 
 int main()
 {
+    std::ifstream t("..\\winlisp\\main.lsp");
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    run(buffer.str(), &global_env);
     environment global_env; add_globals(global_env);
     repl("90> ", &global_env);
 }

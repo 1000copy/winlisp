@@ -1,4 +1,6 @@
 #include <windows.h>
+#include <fstream>
+#include <streambuf>
 #include "..\lisp\lisp.h"
 #include "metric.h"
 cell proc_drawtext(const cells& c);
@@ -152,10 +154,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     apps.push_back(hInstance);
     HWND         hwnd;
     MSG          msg;
-    run("(define winproc (lambda (hwnd msg wp lp)(paint1 hwnd msg '123rtya啊或者导致version1.1' 2 )))", &global_env);
-    //run("(begin(register (app) 'HelloWin1' 'winproc')(create (app) 'HelloWin1'))", &global_env);
+    std::ifstream t("main.lsp");
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    run(buffer.str(), &global_env);
+    /*run("(define winproc (lambda (hwnd msg wp lp)(paint1 hwnd msg '123rtya啊或者导致version1.1' 2 )))", &global_env);
     run("(register (app) 'HelloWin1' 'winproc')", &global_env);
-    run("(create (app) 'HelloWin1')", &global_env);
+    run("(create (app) 'HelloWin1')", &global_env);*/
     while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
