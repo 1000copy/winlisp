@@ -57,7 +57,7 @@ cell proc_paint1(const cells& c) {
     std::ostringstream stringStream;
     HWND hwnd = hwnds[n0];
     if (n1 == 15) {//WM_PAINT
-        onpaint_metrics(hwnd); return cell(Number, "0");
+        //onpaint_metrics(hwnd); return cell(Number, "0");
         //onpaint(hwnd); return cell(Number, "0");
         // for (paint str)
         hdc = BeginPaint(hwnd, &ps);

@@ -205,7 +205,7 @@ std::list<std::string> tokenize(const std::string& str)
     std::list<std::string> tokens;
     const char* s = str.c_str();
     while (*s) {
-        while (*s == ' ')
+        while (*s == ' ' || *s == '\n')
             ++s;
         if (*s == leftp || *s == rightp)
             tokens.push_back(*s++ == leftp ? "(" : ")");
