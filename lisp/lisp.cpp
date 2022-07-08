@@ -37,6 +37,17 @@ cell proc_add(const cells& c)
     for (cellit i = c.begin() + 1; i != c.end(); ++i) n += atol(i->val.c_str());
     return cell(Number, str(n));
 }
+cell proc_equal(const cells& c)
+{
+    bool b = true;
+    long n(atol(c[0].val.c_str()));
+    for (cellit i = c.begin() + 1; i != c.end(); ++i) b &=  n == atol(i->val.c_str());
+    if (b)
+        return true_sym;
+    else
+        return false_sym;
+    //return cell(Number, str(n));
+}
 
 cell proc_sub(const cells& c)
 {
@@ -130,6 +141,7 @@ void add_globals(environment& env)
     env["cdr"] = cell(&proc_cdr);      env["cons"] = cell(&proc_cons);
     env["length"] = cell(&proc_length);   env["list"] = cell(&proc_list);
     env["null?"] = cell(&proc_nullp);    env["+"] = cell(&proc_add);
+    env["="] = cell(&proc_equal);
     env["-"] = cell(&proc_sub);      env["*"] = cell(&proc_mul);
     env["/"] = cell(&proc_div);      env[">"] = cell(&proc_greater);
     env["<"] = cell(&proc_less);     env["<="] = cell(&proc_less_equal);

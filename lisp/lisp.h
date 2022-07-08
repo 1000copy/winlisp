@@ -5,7 +5,7 @@
 #include <vector>
 #include <list>
 #include <map>
-
+#include <assert.h>
 //#pragma once
 
 enum cell_type { Symbol, Number, String, List, Proc, Lambda };
@@ -44,8 +44,13 @@ struct environment {
         : outer_(outer)
     {
         cellit a = args.begin();
-        for (cellit p = parms.begin(); p != parms.end(); ++p)
-            env_[p->val] = *a++;
+        int count = 0;
+        for (cellit p = parms.begin(); p != parms.end(); ++p) {                        
+            if (count >= args.size())break;
+            env_[p->val] = *a;            
+            count++;
+            a++;
+        }            
     }
 
     // map a variable name onto a cell
@@ -59,6 +64,7 @@ struct environment {
         if (outer_)
             return outer_->find(var); // attempt to find the symbol in some "outer" env
         std::cout << "unbound symbol '" << var << "'\n";
+        assert(false);
         exit(1);
     }
 

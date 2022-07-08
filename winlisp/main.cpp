@@ -20,14 +20,14 @@ cell proc_app(const cells& c) {
 cell proc_register(const cells& c) {
     long n(atol(c[0].val.c_str()));
     registerclass(apps[n], c[1].val.c_str());
-    return cell(Number, "0");
+    return cell(Number, "33");
 }
 cell proc_create1(const cells& c) {
     long n(atol(c[0].val.c_str()));
     HWND hwnd = createwindow(apps[n], c[1].val.c_str());
     ShowWindow(hwnd, 1);
     UpdateWindow(hwnd);
-    return cell(Number, "0");
+    return cell(Number, "11");
 }
 cell proc_drawtext(const cells& c)
 {
@@ -65,7 +65,7 @@ cell proc_paint1(const cells& c) {
         DrawText(hdc, str.c_str(), -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
         EndPaint(hwnd, &ps);
     }
-    return cell(Number, "0");
+    return cell(Number, "22");
 }
 void onpaint(HWND hwnd) {
     HDC         hdc;
@@ -104,19 +104,23 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
     char buff[100];
-    hwnds.push_back(hwnd);
-    long hwndindex = hwnds.size() - 1;
+    long hwndindex;
     cell a;
-    std::string str = "(winproc  ";
-    str += std::to_string(hwndindex);
-    str += " ";
-    str += std::to_string(message);
-    str += " 2 3 )";
-    a = run(str, &global_env);
-    hwnds.pop_back();
-    if (message == WM_PAINT || WM_CREATE == message)return 0;
+    std::string str;
+    //if (message == WM_PAINT || WM_CREATE == message)return 0;
     switch (message)
     {
+    case WM_PAINT:
+        hwnds.push_back(hwnd);
+        hwndindex = hwnds.size() - 1;
+        str = "(winproc  ";
+        str += std::to_string(hwndindex);
+        str += " ";
+        str += std::to_string(WM_PAINT);
+        str += " 2 3 )";
+        a = run(str, &global_env);
+        hwnds.pop_back();
+        return 0;
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -157,10 +161,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     std::ifstream t("main.lsp");
     std::stringstream buffer;
     buffer << t.rdbuf();
-    run(buffer.str(), &global_env);
-    /*run("(define winproc (lambda (hwnd msg wp lp)(paint1 hwnd msg '123rtya啊或者导致version1.1' 2 )))", &global_env);
+    //run(buffer.str(), &global_env);
+    std::string a="1";
+    a +=  "2";
+    a += "3";
+    run("(define winproc (lambda (hwnd msg wp lp)(paint1 hwnd msg '123rtya啊或者导致version1.1' 2 )))", &global_env);
     run("(register (app) 'HelloWin1' 'winproc')", &global_env);
-    run("(create (app) 'HelloWin1')", &global_env);*/
+    run("(create (app) 'HelloWin1')", &global_env);
     while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
