@@ -30,6 +30,14 @@ cell proc_cat(const cells& c)
     return cell(String, base);
 }
 
+cell proc_p(const cells& c)
+{
+    // std::cout << "dkdkdk";
+    // std::string base(c[0].val.c_str());
+    for (cellit i = c.begin() ; i != c.end(); ++i) std::cout<< i->val.c_str() << " ";
+    std::cout << "\n";
+    return true_sym;
+}
 
 cell proc_add(const cells& c)
 {
@@ -146,6 +154,7 @@ void add_globals(environment& env)
     env["/"] = cell(&proc_div);      env[">"] = cell(&proc_greater);
     env["<"] = cell(&proc_less);     env["<="] = cell(&proc_less_equal);
     env["cat"] = cell(&proc_cat);
+    env["p"] = cell(&proc_p);
     
 }
 
