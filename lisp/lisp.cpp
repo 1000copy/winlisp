@@ -7,6 +7,8 @@
 /*如果选择了“使用Unicode字符集”，则代码里用到的API被解释为Unicode版本的API（带标记W的API），如MessageBox被解释为MessageBoxW；
 如果选择了“使用多字节字符集”，则代码里用到的API被解释为ANSI编码版本的API（带标记A的API），如MessageBox被解释为MessageBoxA。
 */
+#include <fstream>
+
 #include "lisp.h"
 char delimiter = '\'';
 char leftp = '('; //'[';
@@ -38,9 +40,12 @@ cell proc_p(const cells& c)
     std::cout << "\n";
     return true_sym;
 }
-
+void log(std::string str){
+    std::cout<< str << "\n`";
+}
 cell proc_add(const cells& c)
 {
+    // log("+ proc");
     long n(atol(c[0].val.c_str()));
     for (cellit i = c.begin() + 1; i != c.end(); ++i) n += atol(i->val.c_str());
     return cell(Number, str(n));

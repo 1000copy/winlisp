@@ -33,7 +33,10 @@ void repl(const std::string& prompt, environment* env)
         std::cout << to_string(eval(read(line), env)) << '\n';
     }
 }
-
+void test(environment global_env){
+    
+    
+}
 int main()
 {
     /*std::ifstream t("..\\winlisp\\main.lsp");
@@ -41,10 +44,12 @@ int main()
     buffer << t.rdbuf();
     run(buffer.str(), &global_env);*/
     environment global_env; add_globals(global_env);
-    std::cout << to_string(eval(read("(define x (lambda (x) (p x)))"), &global_env)) << '\n';
-    std::cout << to_string(eval(read("(x 2)"), &global_env)) << '\n';
-    //repl("90> ", &global_env);
-    TEST("(quote (testing 1 (2.0) -3.14e159))", "(testing 1 (2.0) -3.14e1599)");
+    //std::cout << to_string(eval(read("(define x (lambda (x) (p x)))"), &global_env)) << '\n';
+    //std::cout << to_string(eval(read("(x 2)"), &global_env)) << '\n';
+    // TEST("(+ 2 2)", "4");
+    // repl("90> ", &global_env);
+    // test(global_env);
+    TEST("(quote (testing 1 (2.0) -3.14e159))", "(testing 1 (2.0) -3.14e159)");
     TEST("(+ 2 2)", "4");
     TEST("(+ (* 2 100) (* 1 10))", "210");
     TEST("(if (> 6 5) (+ 1 1) (+ 2 2))", "2");
@@ -86,6 +91,7 @@ int main()
         << "total tests " << g_test_count
         << ", total failures " << g_fault_count
         << "\n";
+    
     return g_fault_count ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 

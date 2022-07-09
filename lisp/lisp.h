@@ -44,12 +44,12 @@ struct environment {
         : outer_(outer)
     {
         cellit a = args.begin();
-        int count = 0;
+        if(args.size()!=parms.size()){
+            std::cout << "params length must be equal to args length" << args.size() << parms.size() << "'\n";
+            assert(false);
+        }
         for (cellit p = parms.begin(); p != parms.end(); ++p) {                        
-            if (count >= args.size())break;
-            env_[p->val] = *a;            
-            count++;
-            a++;
+            env_[p->val] = *a++;            
         }            
     }
 
