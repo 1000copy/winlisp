@@ -46,7 +46,8 @@ struct environment {
         cellit a = args.begin();
         if(args.size()!=parms.size()){
             std::cout << "params length must be equal to args length" << args.size() << parms.size() << "'\n";
-            assert(false);
+            //assert(false);
+            return;
         }
         for (cellit p = parms.begin(); p != parms.end(); ++p) {                        
             env_[p->val] = *a++;            

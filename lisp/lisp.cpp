@@ -178,6 +178,7 @@ cell eval(cell x, environment* env)
     if (x.list.empty())
         return nil;
     if (x.list[0].type == Symbol) {
+        //log("eval list:"); log(x.list[0].val);
         if (x.list[0].val == "quote")       // (quote exp)
             return x.list[1];
         if (x.list[0].val == "if")          // (if test conseq [alt])
@@ -201,6 +202,7 @@ cell eval(cell x, environment* env)
         }
     }
     // (proc exp*)
+    //log("eval proc:");
     cell proc(eval(x.list[0], env));
     cells exps;
     for (cell::iter exp = x.list.begin() + 1; exp != x.list.end(); ++exp)
@@ -244,7 +246,7 @@ std::list<std::string> tokenize(const std::string& str)
         }
         else {
             const char* t = s;
-            while (*t && *t != ' ' && *t != leftp && *t != rightp)
+            while (*t && *t != ' ' && *t != '\n' && *t != leftp && *t != rightp)
                 ++t;
             tokens.push_back(std::string(s, t));
             s = t;

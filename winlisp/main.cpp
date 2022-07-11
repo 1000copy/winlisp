@@ -161,13 +161,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     std::ifstream t("main.lsp");
     std::stringstream buffer;
     buffer << t.rdbuf();
-    //run(buffer.str(), &global_env);
-    std::string a="1";
+    run(buffer.str(), &global_env);
+    /*std::string a="1";
     a +=  "2";
     a += "3";
     run("(define winproc (lambda (hwnd msg wp lp)(paint1 hwnd msg '123rtya°¡»òÕßµ¼ÖÂversion1.1' 2 )))", &global_env);
     run("(register (app) 'HelloWin1' 'winproc')", &global_env);
-    run("(create (app) 'HelloWin1')", &global_env);
+    run("(create (app) 'HelloWin1')", &global_env);*/
     while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
