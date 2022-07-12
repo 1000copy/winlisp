@@ -19,6 +19,11 @@ HWND createwindow(HINSTANCE hInstance, std::string app);
 cell proc_app(const cells& c) {
     return cell(Number, "0");
 }
+cell proc_quit(const cells& c) {
+    PostQuitMessage(0);
+    return true_sym;
+}
+
 cell proc_register(const cells& c) {
     long n(atol(c[0].val.c_str()));
     registerclass(apps[n], c[1].val.c_str());
@@ -198,7 +203,23 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     cell a;
     std::string str;
     //if (message == WM_PAINT || WM_CREATE == message)return 0;
-    switch (message)
+    hwnds.push_back(hwnd);
+    hwndindex = hwnds.size() - 1;
+    str = "(winproc  ";
+    str += std::to_string(hwndindex);
+    str += " ";
+    str += std::to_string(message);
+    str += " 2 3 )";
+    a = run(str, &global_env);
+    hwnds.pop_back();
+    if (message == 15) {
+        return 0;
+    }
+    if (message == 2)
+    {
+        return 0;
+    }
+    /*switch (message)
     {
     case WM_PAINT:
         hwnds.push_back(hwnd);
@@ -214,7 +235,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
-    }
+    }*/
 
     return DefWindowProc(hwnd, message, wParam, lParam);
 }
@@ -245,6 +266,7 @@ void add_winglobals() {
     global_env["drawtext"] = cell(&proc_drawtext);
     global_env["line"] = cell(&proc_line);
     global_env["getclientrect"] = cell(&proc_getclientrect);
+    global_env["quit"] = cell(&proc_quit);    
 }
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     PSTR szCmdLine, int iCmdShow)
