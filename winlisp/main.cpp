@@ -212,11 +212,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     str += " 2 3 )";
     a = run(str, &global_env);
     hwnds.pop_back();
-    if (message == 15) {
-        return 0;
-    }
-    if (message == 2)
-    {
+    if (message == WM_PAINT || message == WM_DESTROY) {
         return 0;
     }
     /*switch (message)
@@ -236,7 +232,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         PostQuitMessage(0);
         return 0;
     }*/
-
     return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
