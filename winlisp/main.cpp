@@ -11,6 +11,8 @@ cell proc_paint1(const cells& c);
 std::vector<HDC> list;
 std::vector<HINSTANCE> apps;
 std::vector<HWND> hwnds;
+std::vector<HDC> hdcs;
+std::vector<PAINTSTRUCT> pss;
 environment global_env;
 ATOM registerclass(HINSTANCE hInstance, std::string app);
 HWND createwindow(HINSTANCE hInstance, std::string app);
@@ -31,21 +33,56 @@ cell proc_create1(const cells& c) {
 }
 cell proc_drawtext(const cells& c)
 {
-    HDC dc;
-    long n(atol(c[0].val.c_str()));
+    //HDC dc;
+    //long n(atol(c[0].val.c_str()));
+    //long left(atol(c[2].val.c_str()));
+    //long top(atol(c[3].val.c_str()));
+    //long right(atol(c[4].val.c_str()));
+    //long bottom(atol(c[5].val.c_str()));
+    //std::string base(c[1].val.c_str());
+    //RECT        rect;
+    //rect.left = left;//10;
+    //rect.top = top;//10;
+    //rect.right = right;//200;
+    //rect.bottom = bottom;//100;
+    //DrawText(list[n], (LPCSTR)(base.c_str()), -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+    //return cell(String, base);
+    long n0(atol(c[0].list[0].val.c_str()));//hwnd
+    long n1(atol(c[0].list[1].val.c_str()));//hdc
+    long n2(atol(c[0].list[2].val.c_str()));//ps
+    std::string base(c[1].val.c_str());
+    HWND hwnd = hwnds[n0];
+    HDC         hdc = hdcs[n1]; //hdc
+    PAINTSTRUCT ps = pss[n2]; //ps    
     long left(atol(c[2].val.c_str()));
     long top(atol(c[3].val.c_str()));
     long right(atol(c[4].val.c_str()));
-    long bottom(atol(c[5].val.c_str()));
-    std::string base(c[1].val.c_str());
+    long bottom(atol(c[5].val.c_str()));    
     RECT        rect;
     rect.left = left;//10;
     rect.top = top;//10;
     rect.right = right;//200;
     rect.bottom = bottom;//100;
-    DrawText(list[n], (LPCSTR)(base.c_str()), -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-    return cell(String, base);
-}void onpaint(HWND hwnd);
+    DrawText(hdc, (LPCSTR)(base.c_str()), -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);    
+    return true_sym;
+}
+cell proc_line(const cells& c)
+{
+    long n0(atol(c[0].list[0].val.c_str()));//hwnd
+    long n1(atol(c[0].list[1].val.c_str()));//hdc
+    long n2(atol(c[0].list[2].val.c_str()));//ps
+    HWND hwnd = hwnds[n0];
+    HDC         hdc = hdcs[n1]; //hdc
+    PAINTSTRUCT ps = pss[n2]; //ps    
+    long left(atol(c[1].val.c_str()));
+    long top(atol(c[2].val.c_str()));
+    long right(atol(c[3].val.c_str()));
+    long bottom(atol(c[4].val.c_str()));
+    MoveToEx(hdc, left, top, NULL);
+    LineTo(hdc, right, bottom);
+    return true_sym;
+}
+void onpaint(HWND hwnd);
 cell proc_paint1(const cells& c) {
     
     long n0(atol(c[0].val.c_str()));
@@ -66,6 +103,42 @@ cell proc_paint1(const cells& c) {
         EndPaint(hwnd, &ps);
     }
     return cell(Number, "22");
+}
+cell proc_beginpaint(const cells& c) {
+
+    long n0(atol(c[0].val.c_str()));
+    HDC         hdc;
+    PAINTSTRUCT ps;
+    RECT        rect;
+    std::ostringstream stringStream;
+    HWND hwnd = hwnds[n0];    
+    hdc = BeginPaint(hwnd, &ps);
+    hdcs.push_back(hdc);
+    pss.push_back(ps);
+    std::string str;
+    str += "(list ";
+    str += std::to_string(n0);
+    str += " ";
+    str += std::to_string(hdcs.size() - 1);
+    str += " ";
+    str += std::to_string(pss.size()-1);
+    str += " )";    
+    std::ostringstream stream;
+    stream << "(list " <<n0<<" "<<hdcs.size()-1<<" "<<pss.size()-1<<" )";
+    return run(stream.str(), &global_env);
+}
+cell proc_endpaint(const cells& c) {
+
+    long n0(atol(c[0].list[0].val.c_str()));//hwnd
+    long n1(atol(c[0].list[1].val.c_str()));//hdc
+    long n2(atol(c[0].list[2].val.c_str()));//ps
+    HWND hwnd = hwnds[n0]; 
+    HDC         hdc = hdcs[n1]; //hdc
+    PAINTSTRUCT ps = pss[n2]; //ps    
+    EndPaint(hwnd, &ps);
+    hdcs.pop_back();
+    pss.pop_back();
+    return true_sym;
 }
 void onpaint(HWND hwnd) {
     HDC         hdc;
@@ -95,7 +168,6 @@ ATOM registerclass(HINSTANCE hInstance, std::string app) {
     wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
     wndclass.lpszMenuName = NULL;
     wndclass.lpszClassName = app.c_str();// szAppName;
-
     return RegisterClass(&wndclass);
 }
 
@@ -144,17 +216,25 @@ HWND createwindow(HINSTANCE hInstance, std::string app) {
         hInstance,                  // program instance handle
         NULL);                     // creation parameters
 }
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-    PSTR szCmdLine, int iCmdShow)
-{
-    
-    add_globals(global_env);
-    //environment env = global_env;
+void add_winglobals() {
     global_env["drawtext"] = cell(&proc_drawtext);
     global_env["app"] = cell(&proc_app);
     global_env["register"] = cell(&proc_register);
     global_env["create"] = cell(&proc_create1);
     global_env["paint1"] = cell(&proc_paint1);
+    global_env["beginpaint"] = cell(&proc_beginpaint);
+    global_env["endpaint"] = cell(&proc_endpaint);
+    global_env["drawtext"] = cell(&proc_drawtext);
+    global_env["line"] = cell(&proc_line);
+}
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+    PSTR szCmdLine, int iCmdShow)
+{
+    
+    add_globals(global_env);
+    add_winglobals();
+    //environment env = global_env;
+    
     apps.push_back(hInstance);
     HWND         hwnd;
     MSG          msg;

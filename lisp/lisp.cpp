@@ -159,8 +159,7 @@ void add_globals(environment& env)
     env["/"] = cell(&proc_div);      env[">"] = cell(&proc_greater);
     env["<"] = cell(&proc_less);     env["<="] = cell(&proc_less_equal);
     env["cat"] = cell(&proc_cat);
-    env["p"] = cell(&proc_p);
-    
+    env["p"] = cell(&proc_p);     
 }
 
 ////////////////////// eval
