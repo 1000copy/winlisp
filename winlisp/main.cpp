@@ -54,10 +54,19 @@ cell proc_drawtext(const cells& c)
     HWND hwnd = hwnds[n0];
     HDC         hdc = hdcs[n1]; //hdc
     PAINTSTRUCT ps = pss[n2]; //ps    
-    long left(atol(c[2].val.c_str()));
-    long top(atol(c[3].val.c_str()));
-    long right(atol(c[4].val.c_str()));
-    long bottom(atol(c[5].val.c_str()));    
+    long left, top, right, bottom;
+    if (c[2].type != List) {
+        left = atol(c[2].val.c_str());
+        top = (atol(c[3].val.c_str()));
+        right = (atol(c[4].val.c_str()));
+        bottom = (atol(c[5].val.c_str()));
+    }
+    else {
+        left = atol(c[2].list[0].val.c_str());
+        top = atol(c[2].list[1].val.c_str());
+        right = atol(c[2].list[2].val.c_str());
+        bottom = atol(c[2].list[3].val.c_str());
+    }
     RECT        rect;
     rect.left = left;//10;
     rect.top = top;//10;
@@ -103,6 +112,15 @@ cell proc_paint1(const cells& c) {
         EndPaint(hwnd, &ps);
     }
     return cell(Number, "22");
+}
+cell proc_getclientrect(const cells& c) {
+    RECT        rect;
+    long n0(atol(c[0].val.c_str()));
+    HWND hwnd = hwnds[n0];
+    GetClientRect(hwnd, &rect);
+    std::ostringstream stream;
+    stream << "(list " << rect.left << " " <<rect.top << " " << rect.right << " "<< rect.bottom << " " << " )";
+    return run(stream.str(), &global_env);
 }
 cell proc_beginpaint(const cells& c) {
 
@@ -226,6 +244,7 @@ void add_winglobals() {
     global_env["endpaint"] = cell(&proc_endpaint);
     global_env["drawtext"] = cell(&proc_drawtext);
     global_env["line"] = cell(&proc_line);
+    global_env["getclientrect"] = cell(&proc_getclientrect);
 }
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     PSTR szCmdLine, int iCmdShow)

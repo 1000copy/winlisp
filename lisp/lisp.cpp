@@ -113,7 +113,9 @@ cell proc_less_equal(const cells& c)
 cell proc_length(const cells& c) { return cell(Number, str(c[0].list.size())); }
 cell proc_nullp(const cells& c) { return c[0].list.empty() ? true_sym : false_sym; }
 cell proc_car(const cells& c) { return c[0].list[0]; }
-
+cell proc_nth(const cells& c) { 
+    int i = atoi(c[1].val.c_str());
+    return c[0].list[i]; }
 cell proc_cdr(const cells& c)
 {
     if (c[0].list.size() < 2)
@@ -160,6 +162,7 @@ void add_globals(environment& env)
     env["<"] = cell(&proc_less);     env["<="] = cell(&proc_less_equal);
     env["cat"] = cell(&proc_cat);
     env["p"] = cell(&proc_p);     
+    env["nth"] = cell(&proc_nth);
 }
 
 ////////////////////// eval
