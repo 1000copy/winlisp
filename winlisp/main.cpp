@@ -169,11 +169,11 @@ void onpaint(HWND hwnd) {
     RECT        rect;
     std::ostringstream stringStream;
     hdc = BeginPaint(hwnd, &ps);
-    list.push_back(hdc);
+    hdcs.push_back(hdc);
     GetClientRect(hwnd, &rect);
-    stringStream << "(drawtext " << list.size() - 1 << " '12s汉字大众化'" << " " << rect.left << " " << rect.top << " " << rect.right << " " << rect.bottom << ")";
+    stringStream << "(drawtext " << hdcs.size() - 1 << " '12s汉字大众化'" << " " << rect.left << " " << rect.top << " " << rect.right << " " << rect.bottom << ")";
     eval(read(stringStream.str()), &global_env);
-    list.pop_back();
+    hdcs.pop_back();
     EndPaint(hwnd, &ps);
 }
 
@@ -195,6 +195,7 @@ ATOM registerclass(HINSTANCE hInstance, std::string app) {
 }
 
 void onpaint(HWND hwnd);
+bool haserror=false;
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
@@ -203,35 +204,33 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     cell a;
     std::string str;
     //if (message == WM_PAINT || WM_CREATE == message)return 0;
-    hwnds.push_back(hwnd);
-    hwndindex = hwnds.size() - 1;
-    str = "(winproc  ";
-    str += std::to_string(hwndindex);
-    str += " ";
-    str += std::to_string(message);
-    str += " 2 3 )";
-    a = run(str, &global_env);
-    hwnds.pop_back();
-    if (message == WM_PAINT || message == WM_DESTROY) {
-        return 0;
-    }
-    /*switch (message)
-    {
-    case WM_PAINT:
+    if(!haserror)
+    try {
         hwnds.push_back(hwnd);
         hwndindex = hwnds.size() - 1;
         str = "(winproc  ";
         str += std::to_string(hwndindex);
         str += " ";
-        str += std::to_string(WM_PAINT);
+        str += std::to_string(message);
         str += " 2 3 )";
         a = run(str, &global_env);
         hwnds.pop_back();
-        return 0;
+        if (message == WM_PAINT || message == WM_DESTROY) {
+            return 0;
+        }
+    }
+    catch (std::string msg) {
+        //MessageBox(hwnd, msg.c_str(), "error", 0);
+        //return DefWindowProc(hwnd, message, wParam, lParam);
+        haserror = true;
+    }else
+    
+    switch (message)
+    {
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
-    }*/
+    }
     return DefWindowProc(hwnd, message, wParam, lParam);
 }
 

@@ -7,11 +7,10 @@
 #include <map>
 #include <assert.h>
 //#pragma once
-
+using namespace std;
 enum cell_type { Symbol, Number, String, List, Proc, Lambda };
 
 struct environment; // forward declaration; cell and environment reference each other
-
 // a variant that can hold any kind of lisp value
 struct cell {
     typedef cell(*proc_type)(const std::vector<cell>&);
@@ -29,6 +28,7 @@ typedef cells::const_iterator cellit;
 const cell false_sym(Symbol, "#f");
 const cell true_sym(Symbol, "#t"); // anything that isn't false_sym is true
 const cell nil(Symbol, "nil");
+std::string to_string1(const cells& exp);
 ////////////////////// cell
 
 
@@ -44,11 +44,6 @@ struct environment {
         : outer_(outer)
     {
         cellit a = args.begin();
-        if(args.size()!=parms.size()){
-            std::cout << "params length must be equal to args length" << args.size() << parms.size() << "'\n";
-            //assert(false);
-            return;
-        }
         for (cellit p = parms.begin(); p != parms.end(); ++p) {                        
             env_[p->val] = *a++;            
         }            

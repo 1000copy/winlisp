@@ -217,7 +217,20 @@ cell eval(cell x, environment* env)
         // *Although the environmet existed at the time the lambda was defined
         // it wasn't necessarily complete - it may have subsequently had
         // more symbols defined in that environment.
-        return eval(/*body*/proc.list[2], new environment(/*parms*/proc.list[1].list, /*args*/exps, proc.env));
+        const cells& parms = proc.list[1].list;
+        const cells& args = exps;
+            if (args.size() != parms.size()) {
+                // std::cout << "params length must be equal to args length" << args.size() << parms.size() << "'\n";
+                std::stringstream buffer;
+                buffer << "lambda params :";
+                buffer << to_string1(parms);
+                buffer << "not match args :";
+                buffer << to_string1(args);
+                throw buffer.str();
+            }
+            return eval(/*body*/proc.list[2], new environment(parms, args, proc.env));
+        
+        //return eval(/*body*/proc.list[2], new environment(/*parms*/proc.list[1].list, /*args*/exps, proc.env));
     }
     else if (proc.type == Proc)
         return proc.proc(exps);
@@ -308,10 +321,13 @@ std::string to_string(const cell& exp)
     return exp.val;
 }
 
-
-/*------------------------------------------------------------
-   HELLOWIN.C -- Displays "Hello, Windows 98!" in client area
-                 (c) Charles Petzold, 1998
-  ------------------------------------------------------------*/
-
-
+std::string to_string1(const cells& c)
+{
+    std::string s("(");
+    for (cellit i = c.begin(); i != c.end(); ++i) {
+        s += to_string(*i);
+        s += " ";
+    }
+    s += ")";
+    return s;
+}
