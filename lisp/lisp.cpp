@@ -110,7 +110,11 @@ cell proc_less_equal(const cells& c)
     return true_sym;
 }
 
-cell proc_length(const cells& c) { return cell(Number, str(c[0].list.size())); }
+cell proc_length(const cells& c) { 
+    std::stringstream ss;
+    ss << c[0].list.size();
+    return cell(Number, ss.str()); 
+}
 cell proc_nullp(const cells& c) { return c[0].list.empty() ? true_sym : false_sym; }
 cell proc_car(const cells& c) { return c[0].list[0]; }
 cell proc_nth(const cells& c) { 

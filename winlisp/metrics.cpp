@@ -65,7 +65,7 @@ void onpaint1(HWND hwnd) {
     HDC         hdc;
     int         i;
     PAINTSTRUCT ps;
-    TCHAR       szBuffer[10];
+    //TCHAR       szBuffer[10];
     TEXTMETRIC  tm;
     hdc = GetDC(hwnd);
 

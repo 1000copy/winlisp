@@ -12,16 +12,19 @@ enum cell_type { Symbol, Number, String, List, Proc, Lambda };
 
 struct environment; // forward declaration; cell and environment reference each other
 // a variant that can hold any kind of lisp value
+#pragma warning(push, 0)
 struct cell {
     typedef cell(*proc_type)(const std::vector<cell>&);
     typedef std::vector<cell>::const_iterator iter;
     typedef std::map<std::string, cell> map;
     cell_type type; std::string val; std::vector<cell> list; proc_type proc; environment* env;
-    cell(cell_type type = Symbol) : type(type), env(0) {}
-    cell(cell_type type, const std::string& val) : type(type), val(val), env(0) {}
+#pragma warning(disable : 26812)
+    cell(cell_type type = Symbol) : type(type), env(0),proc(0) {}
+
+    cell(cell_type type, const std::string& val) : type(type), val(val), env(0), proc(0) {}
     cell(proc_type proc) : type(Proc), proc(proc), env(0) {}
 };
-
+#pragma warning(pop)
 typedef std::vector<cell> cells;
 typedef cells::const_iterator cellit;
 

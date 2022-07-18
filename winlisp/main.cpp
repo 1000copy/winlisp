@@ -72,7 +72,7 @@ cell proc_drawtext(const cells& c)
         right = atol(c[2].list[2].val.c_str());
         bottom = atol(c[2].list[3].val.c_str());
     }
-    RECT        rect;
+    RECT        rect = {0};
     rect.left = left;//10;
     rect.top = top;//10;
     rect.right = right;//200;
@@ -132,7 +132,7 @@ cell proc_beginpaint(const cells& c) {
     long n0(atol(c[0].val.c_str()));
     HDC         hdc;
     PAINTSTRUCT ps;
-    RECT        rect;
+    //RECT        rect;
     std::ostringstream stringStream;
     HWND hwnd = hwnds[n0];    
     hdc = BeginPaint(hwnd, &ps);
@@ -180,7 +180,7 @@ void onpaint(HWND hwnd) {
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 ATOM registerclass(HINSTANCE hInstance, std::string app) {
     //static TCHAR szAppName[] = TEXT("HelloWin");
-    WNDCLASS     wndclass;
+    WNDCLASS     wndclass = {0};
     wndclass.style = CS_HREDRAW | CS_VREDRAW;
     wndclass.lpfnWndProc = WndProc;
     wndclass.cbClsExtra = 0;
@@ -199,7 +199,7 @@ bool haserror=false;
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
-    char buff[100];
+    //char buff[100];
     long hwndindex;
     cell a;
     std::string str;
@@ -207,7 +207,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     if(!haserror)
     try {
         hwnds.push_back(hwnd);
+#pragma warning(push, 0)
         hwndindex = hwnds.size() - 1;
+#pragma warning(pop)
         str = "(winproc  ";
         str += std::to_string(hwndindex);
         str += " ";
@@ -262,8 +264,10 @@ void add_winglobals() {
     global_env["getclientrect"] = cell(&proc_getclientrect);
     global_env["quit"] = cell(&proc_quit);    
 }
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-    PSTR szCmdLine, int iCmdShow)
+
+
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
+//int WINAPI //WinMain    (HINSTANCE hInstance, HINSTANCE hPrevInstance,    PSTR szCmdLine, int iCmdShow)  
 {
     
     add_globals(global_env);
@@ -271,7 +275,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     //environment env = global_env;
     
     apps.push_back(hInstance);
-    HWND         hwnd;
+    //HWND         hwnd;
     MSG          msg;
     std::ifstream t("main.lsp");
     std::stringstream buffer;
@@ -288,7 +292,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
+#pragma warning(push, 0)
     return msg.wParam;
+#pragma warning(pop)
 }
 
 
