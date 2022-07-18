@@ -10,7 +10,7 @@
             #t
         )
     ))
-    (define winproc         (lambda (hwnd msg wp )
+    (define winproc         (lambda (hwnd msg )
         (begin
             (if (= WM_PAINT msg)(onpaint hwnd))
             (if (= WM_DESTROY msg)(quit) )
