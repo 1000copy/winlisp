@@ -155,7 +155,8 @@ cell proc_endpaint(const cells& c) {
     PAINTSTRUCT ps = pss[n2]; //ps    
     PAINTSTRUCT* ps1 = str_ps(c[0].list[3].val);
     //ps = *str_ps(c[0].list[3].val);
-    EndPaint(hwnd, ps1);
+    EndPaint(hwnd, &ps);
+    //EndPaint(hwnd, ps1);
     pss.pop_back();
     return true_sym;
 }
