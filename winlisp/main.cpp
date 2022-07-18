@@ -3,6 +3,23 @@
 #include <streambuf>
 #include "..\lisp\lisp.h"
 #include "metric.h"
+
+
+
+PAINTSTRUCT* str_ps(std::string str) {
+    UINT64 n1(strtoull(str.c_str(), NULL, 0));
+    PAINTSTRUCT* pp = (PAINTSTRUCT*)((void*)n1);
+    return pp;
+}
+std::string ps_str(PAINTSTRUCT* p) {
+    UINT64 a = (UINT64)((void*)p);
+    std::ostringstream os;
+    os << "'";
+    os << a;
+    os << "'";
+    return os.str();
+}
+
 HWND str_hwnd(std::string str) {
     DWORD64 n1(_atoi64(str.c_str()));
     return (HWND)n1;
@@ -12,11 +29,16 @@ std::string hwnd_str(HWND  hwnd) {
 }
 
 HDC str_hdc(std::string str) {
-    DWORD64 n1(_atoi64(str.c_str()));
+    UINT64 n1(strtoull(str.c_str(), NULL, 0));
     return (HDC)n1;
 }
 std::string hdc_str(HDC  hwnd) {
-    return std::to_string((DWORD64)hwnd);
+    std::ostringstream os;
+    os << "'";
+    os << (UINT64)hwnd;
+    os << "'";
+    return os.str();
+    //return std::to_string((UINT64)hwnd);
 }
 
 cell proc_drawtext(const cells& c);
@@ -50,20 +72,7 @@ cell proc_create1(const cells& c) {
 }
 cell proc_drawtext(const cells& c)
 {
-    //HDC dc;
-    //long n(atol(c[0].val.c_str()));
-    //long left(atol(c[2].val.c_str()));
-    //long top(atol(c[3].val.c_str()));
-    //long right(atol(c[4].val.c_str()));
-    //long bottom(atol(c[5].val.c_str()));
-    //std::string base(c[1].val.c_str());
-    //RECT        rect;
-    //rect.left = left;//10;
-    //rect.top = top;//10;
-    //rect.right = right;//200;
-    //rect.bottom = bottom;//100;
-    //DrawText(list[n], (LPCSTR)(base.c_str()), -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-    //return cell(String, base);
+
     long n2(atol(c[0].list[0].val.c_str()));//ps
     std::string base(c[1].val.c_str());
     //HWND hwnd = hwnds[n0];
@@ -130,10 +139,12 @@ cell proc_beginpaint(const cells& c) {
     std::ostringstream stringStream;
     
     hdc = BeginPaint(hwnd, &ps);
-    
-    pss.push_back(ps);    
+    UINT64 a = (UINT64)((void*)&ps);
+    PAINTSTRUCT* pp = (PAINTSTRUCT*)((void*)a);
+    //ps = *pp;
+    pss.push_back(*pp);    
     std::ostringstream stream;
-    stream << "(list " <<pss.size()-1<< " "<< hwnd_str(hwnd) << " " << hdc_str(hdc) << " )";
+    stream << "(list " <<pss.size()-1<< " "<< hwnd_str(hwnd) << " " << hdc_str(hdc) << " " << ps_str(&ps) << ")";
     return run(stream.str(), &global_env);
 }
 cell proc_endpaint(const cells& c) {
@@ -142,7 +153,9 @@ cell proc_endpaint(const cells& c) {
     //HWND hwnd = hwnds[n0]; 
     HWND hwnd = str_hwnd(c[0].list[1].val);        
     PAINTSTRUCT ps = pss[n2]; //ps    
-    EndPaint(hwnd, &ps);
+    PAINTSTRUCT* ps1 = str_ps(c[0].list[3].val);
+    //ps = *str_ps(c[0].list[3].val);
+    EndPaint(hwnd, ps1);
     pss.pop_back();
     return true_sym;
 }
@@ -171,7 +184,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
     //char buff[100];
-    long hwndindex;
     cell a;
     std::string str;
     //if (message == WM_PAINT || WM_CREATE == message)return 0;
@@ -213,10 +225,12 @@ HWND createwindow(HINSTANCE hInstance, std::string app) {
         //TEXT("The Hello Program"), // window caption
         app.c_str(),
         WS_OVERLAPPEDWINDOW,        // window style
-        CW_USEDEFAULT,              // initial x position
-        CW_USEDEFAULT,              // initial y position
-        CW_USEDEFAULT,              // initial x size
-        CW_USEDEFAULT,              // initial y size
+        //CW_USEDEFAULT,              // initial x position
+        //CW_USEDEFAULT,              // initial y position
+        //CW_USEDEFAULT,              // initial x size
+        //CW_USEDEFAULT,              // initial y size
+        100,100,
+        600,400,
         NULL,                       // parent window handle
         NULL,                       // window menu handle
         hInstance,                  // program instance handle
