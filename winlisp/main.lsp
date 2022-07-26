@@ -6,6 +6,7 @@
             (define hdc (beginpaint hwnd ))
             (define rect(getclientrect hwnd ))
             (drawtext hdc '0099' rect)         
+            (line hdc 10 10 100 200)
             (endpaint  hdc)
             #t
         )
@@ -19,3 +20,6 @@
     (register (app) 'HelloWin1' )
     (create (app) 'HelloWin1')
 )
+0x0000001c7fb03480
+0x0000001c7fb03480
+any text or comment

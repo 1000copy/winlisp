@@ -46,7 +46,7 @@ cell proc_app(const cells& c);
 cell proc_register(const cells& c);
 cell proc_create1(const cells& c);
 std::vector<HINSTANCE> apps;
-std::vector<PAINTSTRUCT> pss;
+//std::vector<PAINTSTRUCT> pss;
 environment global_env;
 ATOM registerclass(HINSTANCE hInstance, std::string app);
 HWND createwindow(HINSTANCE hInstance, std::string app);
@@ -79,7 +79,7 @@ cell proc_drawtext(const cells& c)
     //HDC         hdc = hdcs[n1]; //hdc
     HWND hwnd = str_hwnd(c[0].list[1].val);
     HDC         hdc = str_hdc(c[0].list[2].val);
-    PAINTSTRUCT ps = pss[n2]; //ps    
+    //PAINTSTRUCT ps = pss[n2]; //ps    
     long left, top, right, bottom;
     if (c[2].type != List) {
         left = atol(c[2].val.c_str());
@@ -103,12 +103,12 @@ cell proc_drawtext(const cells& c)
 }
 cell proc_line(const cells& c)
 {
-    long n2(atol(c[0].list[0].val.c_str()));//ps
+    //long n2(atol(c[0].list[0].val.c_str()));//ps
     //HWND hwnd = hwnds[n0];
     //HDC         hdc = hdcs[n1]; //hdc
     HWND hwnd = str_hwnd(c[0].list[1].val);
     HDC         hdc = str_hdc(c[0].list[2].val);
-    PAINTSTRUCT ps = pss[n2]; //ps    
+    //PAINTSTRUCT ps = pss[n2]; //ps    
     long left(atol(c[1].val.c_str()));
     long top(atol(c[2].val.c_str()));
     long right(atol(c[3].val.c_str()));
@@ -130,34 +130,29 @@ cell proc_getclientrect(const cells& c) {
     stream << "(list " << rect.left << " " <<rect.top << " " << rect.right << " "<< rect.bottom << " " << " )";
     return run(stream.str(), &global_env);
 }
-
+PAINTSTRUCT ps;
 cell proc_beginpaint(const cells& c) {
     HWND hwnd = str_hwnd(c[0].val);
     HDC         hdc;
-    PAINTSTRUCT ps;
+    
     //RECT        rect;
     std::ostringstream stringStream;
     
     hdc = BeginPaint(hwnd, &ps);
     UINT64 a = (UINT64)((void*)&ps);
-    PAINTSTRUCT* pp = (PAINTSTRUCT*)((void*)a);
-    //ps = *pp;
-    pss.push_back(*pp);    
+    PAINTSTRUCT* qq = &ps;
+    PAINTSTRUCT* pp = (PAINTSTRUCT*)((void*)a);    
     std::ostringstream stream;
-    stream << "(list " <<pss.size()-1<< " "<< hwnd_str(hwnd) << " " << hdc_str(hdc) << " " << ps_str(&ps) << ")";
+    stream << "(list 0 "  << " " << hwnd_str(hwnd) << " " << hdc_str(hdc) << " " << ps_str(&ps) << ")";
     return run(stream.str(), &global_env);
 }
 cell proc_endpaint(const cells& c) {
 
     long n2(atol(c[0].list[0].val.c_str()));//ps
-    //HWND hwnd = hwnds[n0]; 
     HWND hwnd = str_hwnd(c[0].list[1].val);        
-    PAINTSTRUCT ps = pss[n2]; //ps    
     PAINTSTRUCT* ps1 = str_ps(c[0].list[3].val);
-    //ps = *str_ps(c[0].list[3].val);
-    EndPaint(hwnd, &ps);
-    //EndPaint(hwnd, ps1);
-    pss.pop_back();
+    EndPaint(hwnd, ps1);
+    //pss.pop_back();
     return true_sym;
 }
 
