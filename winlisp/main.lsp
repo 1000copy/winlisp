@@ -1,6 +1,5 @@
 (begin
-    (define WM_PAINT 15)
-    (define WM_DESTROY 2)
+    (load 'constants.lsp')    
     (define onpaint(lambda (hwnd )
         (begin
             (define hdc (beginpaint hwnd ))
@@ -23,3 +22,4 @@
 0x0000001c7fb03480
 0x0000001c7fb03480
 any text or comment
+hdc = (hwnd hdc paint_struct)
