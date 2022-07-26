@@ -107,8 +107,7 @@ cell proc_line(const cells& c)
     //HWND hwnd = hwnds[n0];
     //HDC         hdc = hdcs[n1]; //hdc
     HWND hwnd = str_hwnd(c[0].list[1].val);
-    HDC         hdc = str_hdc(c[0].list[2].val);
-    //PAINTSTRUCT ps = pss[n2]; //ps    
+    HDC         hdc = str_hdc(c[0].list[2].val);    
     long left(atol(c[1].val.c_str()));
     long top(atol(c[2].val.c_str()));
     long right(atol(c[3].val.c_str()));
@@ -252,21 +251,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     
     add_globals(global_env);
     add_winglobals();
-    //environment env = global_env;
-    
     apps.push_back(hInstance);
-    //HWND         hwnd;
     MSG          msg;
     std::ifstream t("main.lsp");
     std::stringstream buffer;
     buffer << t.rdbuf();
     run(buffer.str(), &global_env);
-    /*std::string a="1";
-    a +=  "2";
-    a += "3";
-    run("(define winproc (lambda (hwnd msg wp lp)(paint1 hwnd msg '123rtya°¡»òÕßµ¼ÖÂversion1.1' 2 )))", &global_env);
-    run("(register (app) 'HelloWin1' 'winproc')", &global_env);
-    run("(create (app) 'HelloWin1')", &global_env);*/
     while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
