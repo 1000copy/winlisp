@@ -40,7 +40,7 @@ std::string hdc_str(HDC  hwnd) {
     return os.str();
     //return std::to_string((UINT64)hwnd);
 }
-
+cell proc_load(const cells& c);
 cell proc_drawtext(const cells& c);
 cell proc_app(const cells& c);
 cell proc_register(const cells& c);
@@ -57,7 +57,6 @@ cell proc_quit(const cells& c) {
     PostQuitMessage(0);
     return true_sym;
 }
-
 cell proc_register(const cells& c) {
     long n(atol(c[0].val.c_str()));
     registerclass(apps[n], c[1].val.c_str());
@@ -242,6 +241,7 @@ void add_winglobals() {
     global_env["line"] = cell(&proc_line);
     global_env["getclientrect"] = cell(&proc_getclientrect);
     global_env["quit"] = cell(&proc_quit);    
+    global_env["load"] = cell(&proc_load);
 }
 
 
@@ -265,6 +265,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 #pragma warning(push, 0)
     return msg.wParam;
 #pragma warning(pop)
+}
+cell proc_load(const cells& c) {
+    std::string file(c[0].val);
+    std::ifstream t(file);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    run(buffer.str(), &global_env);
+    return true_sym;
 }
 
 
