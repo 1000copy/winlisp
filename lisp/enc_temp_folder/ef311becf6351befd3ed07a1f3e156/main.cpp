@@ -104,17 +104,17 @@ cell proc_textout(const cells& c)
 {
 
     long n2(atol(c[0].list[0].val.c_str()));//ps
-    std::string base(c[3].val.c_str());
+    std::string base(c[1].val.c_str());
     HWND hwnd = str_hwnd(c[0].list[1].val);
     HDC         hdc = str_hdc(c[0].list[2].val);  
     long left, top, right, bottom;
     if (c[2].type != List) {
-        left = atol(c[1].val.c_str());
-        top = (atol(c[2].val.c_str()));
+        left = atol(c[2].val.c_str());
+        top = (atol(c[3].val.c_str()));
     }
     else {
-        left = atol(c[1].list[0].val.c_str());
-        top = atol(c[1].list[1].val.c_str());
+        left = atol(c[2].list[0].val.c_str());
+        top = atol(c[2].list[1].val.c_str());
     }
     TextOut(hdc, left,top, (LPCSTR)(base.c_str()),base.size());
     return true_sym;
