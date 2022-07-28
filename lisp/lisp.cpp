@@ -31,7 +31,6 @@ cell proc_cat(const cells& c)
     for (cellit i = c.begin() + 1; i != c.end(); ++i) base += i->val.c_str();
     return cell(String, base);
 }
-
 cell proc_p(const cells& c)
 {
     // std::cout << "dkdkdk";
@@ -205,6 +204,13 @@ cell eval(cell x, environment* env)
             for (size_t i = 1; i < x.list.size() - 1; ++i)
                 eval(x.list[i], env);
             return eval(x.list[x.list.size() - 1], env);
+        }
+        if (x.list[0].val == "repeat") {     // (repeat exp exp)
+            cell count = eval(x.list[1], env);
+            long cc = atol(count.val.c_str());
+            for (size_t i = 1; i < cc; ++i)
+                eval(x.list[2], env);
+            return eval(x.list[2], env);
         }
     }
     // (proc exp*)
