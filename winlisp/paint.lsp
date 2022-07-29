@@ -1,31 +1,32 @@
 (define onpaint(lambda (hwnd )
     (begin
-        (define! texts(
-            (--- --- --- )
-            ('ab c' abd 3 )
-            (1 2 3 )
-            (1 2 3 )
-        ))
-        (define! offsets(
-           10 100 150
-        ))
-        (define hdc (beginpaint hwnd ))
-        (define x 0)
-        (define y 0)
-        (define offset 0)
+        (define!  texts(
+                (--- --- --- )
+                ('ab c' abd 3 )
+                (1 2 3 )
+                (1 2 3 )
+            )
+            offsets(
+                20 100 250
+            )
+        )
+        (define triple (beginpaint hwnd ))
+        (define x 0 y 0 offset 0)
         (repeat 3(begin
             (repeat 3 (begin
                 (set! offset (nth offsets x))
-                (textout hdc offset (* y 15) (nth (nth texts y) x))
+                (textout triple offset (* y 15) (nth (nth texts y) x))
                 (set! x(+ x 1 ))
             ))     
             (set! y(+ y 1 ))
             (set! x 0)
         ))  
-        (endpaint  hdc)
+        (endpaint  triple)
         #t
     )
 ))
+there comment go
+triple == hwnd hdc paintstructure
 repeat x action
 repeat y action
 TODO:

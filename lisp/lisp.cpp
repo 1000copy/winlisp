@@ -190,10 +190,20 @@ cell eval(cell x, environment* env)
             return eval(eval(x.list[1], env).val == "#f" ? (x.list.size() < 4 ? nil : x.list[3]) : x.list[2], env);
         if (x.list[0].val == "set!")        // (set! var exp)
             return env->find(x.list[1].val)[x.list[1].val] = eval(x.list[2], env);
-        if (x.list[0].val == "define")      // (define var exp)
-            return (*env)[x.list[1].val] = eval(x.list[2], env);
-        if (x.list[0].val == "define!")      // (define var exp)
-            return (*env)[x.list[1].val] = x.list[2];
+        if (x.list[0].val == "define") {      // (define var exp)
+            int count = (x.list.size()-1) / 2;
+            for (int i = 0; i < count - 1; i++) {
+                (*env)[x.list[2*i+1].val] = eval(x.list[2*i+2], env);
+            }
+            return (*env)[x.list[2 * (count-1) + 1].val] = eval(x.list[2 * (count-1) + 2], env);
+        }
+        if (x.list[0].val == "define!") {      // (define var exp)
+            int count = (x.list.size() - 1) / 2;
+            for (int i = 0; i < count - 1; i++) {
+                (*env)[x.list[2 * i + 1].val] = x.list[2 * i + 2];
+            }
+            return (*env)[x.list[2 * (count - 1) + 1].val] = x.list[2 * (count - 1) + 2];
+        }
         if (x.list[0].val == "lambda") {    // (lambda (var*) exp)
             x.type = Lambda;
             // keep a reference to the environment that exists now (when the
