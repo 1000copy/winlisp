@@ -274,10 +274,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     add_winglobals();
     apps.push_back(hInstance);
     MSG          msg;
-    std::ifstream t("main.lsp");
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-    run(buffer.str(), &global_env);
+    try {
+        std::ifstream t("main.lsp");
+        std::stringstream buffer;
+        buffer << t.rdbuf();
+        run(buffer.str(), &global_env);
+    }
+    catch (std::string str) {
+        ofstream myFile_Handler;
+        // File Open
+        myFile_Handler.open("log.txt", std::ios_base::app);
+        myFile_Handler << str.c_str() << endl;
+        myFile_Handler.close();
+        exit(1);
+    }
     while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);

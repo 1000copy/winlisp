@@ -2,7 +2,7 @@
     (begin
         (define hdc (beginpaint hwnd ))
         (define rect(getclientrect hwnd ))
-        (drawtext hdc '0099' rect)         
+        (drawtext hdc 'hello,world!' rect)         
         (line hdc 10 10 100 200)
         (endpaint  hdc)
         #t

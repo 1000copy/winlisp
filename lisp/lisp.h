@@ -62,9 +62,9 @@ struct environment {
             return env_; // the symbol exists in this environment
         if (outer_)
             return outer_->find(var); // attempt to find the symbol in some "outer" env
-        std::cout << "unbound symbol '" << var << "'\n";
-        assert(false);
-        exit(1);
+        std::stringstream buffer;
+        buffer << "unbound symbol '" << var << "'";
+        throw buffer.str();
     }
 
     // return a reference to the cell associated with the given symbol 'var'
