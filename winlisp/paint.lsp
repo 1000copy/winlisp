@@ -1,22 +1,27 @@
 (define onpaint(lambda (hwnd )
     (begin
-        (define texts(quote(
+        (define! texts(
+            (--- --- --- )
             ('ab c' abd 3 )
             (1 2 3 )
             (1 2 3 )
-        )))
-        (define offsets(quote(
-           0 100 100
-        )))
+        ))
+        (define! offsets(
+           10 100 150
+        ))
         (define hdc (beginpaint hwnd ))
         (define x 0)
-        (define xx 0)
-        (repeat 3 (begin
-          (set! xx (* 100 x))
-          (quote(drawtext hdc (nth (nth texts 0) x) xx 0 (+ xx 100) 100))
-          (textout hdc xx 0 (nth (nth texts 0) x))
-          (set! x(+ x 1 ))
-        ))       
+        (define y 0)
+        (define offset 0)
+        (repeat 3(begin
+            (repeat 3 (begin
+                (set! offset (nth offsets x))
+                (textout hdc offset (* y 15) (nth (nth texts y) x))
+                (set! x(+ x 1 ))
+            ))     
+            (set! y(+ y 1 ))
+            (set! x 0)
+        ))  
         (endpaint  hdc)
         #t
     )
