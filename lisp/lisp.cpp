@@ -1,11 +1,11 @@
-// ±àÒëÔËÐÐ·½·¨
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½
 // VsDevCmd.bat
 // cl  user32.lib gdi32.lib wisp.cpp
-// ½â¾öDrawTextÊä³öÂÒÂë £ºsave¡¡cpp file encoded by UTF-16 LE
-// µ«ÊÇÔÚIDE»·¾³ÄÚ£¬ÖÐÎÄ»áÂÒÂë¡£¸ã²»¶®¡£
-//  ¸ã¶¨£º°ÑIDEÄÚµÄ×Ö·û¼¯Ä¬ÈÏµÄUNICODE¸Ä³ÉÎ´ÉèÖÃ¡£¾ßÌåÐÞ¸Ä·½·¨£ºProjectÊôÐÔ - ¸ß¼¶ - ×Ö·û¼¯ - UNICODE Ñ¡Ôñ¸ÄÎª Î´ÉèÖÃ
-/*Èç¹ûÑ¡ÔñÁË¡°Ê¹ÓÃUnicode×Ö·û¼¯¡±£¬Ôò´úÂëÀïÓÃµ½µÄAPI±»½âÊÍÎªUnicode°æ±¾µÄAPI£¨´ø±ê¼ÇWµÄAPI£©£¬ÈçMessageBox±»½âÊÍÎªMessageBoxW£»
-Èç¹ûÑ¡ÔñÁË¡°Ê¹ÓÃ¶à×Ö½Ú×Ö·û¼¯¡±£¬Ôò´úÂëÀïÓÃµ½µÄAPI±»½âÊÍÎªANSI±àÂë°æ±¾µÄAPI£¨´ø±ê¼ÇAµÄAPI£©£¬ÈçMessageBox±»½âÊÍÎªMessageBoxA¡£
+// ï¿½ï¿½ï¿½DrawTextï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½saveï¿½ï¿½cpp file encoded by UTF-16 LE
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IDEï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ë¡£ï¿½ã²»ï¿½ï¿½ï¿½ï¿½
+//  ï¿½ã¶¨ï¿½ï¿½ï¿½ï¿½IDEï¿½Úµï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ä¬ï¿½Ïµï¿½UNICODEï¿½Ä³ï¿½Î´ï¿½ï¿½ï¿½Ã¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸Ä·ï¿½ï¿½ï¿½ï¿½ï¿½Projectï¿½ï¿½ï¿½ï¿½ - ï¿½ß¼ï¿½ - ï¿½Ö·ï¿½ï¿½ï¿½ - UNICODE Ñ¡ï¿½ï¿½ï¿½Îª Î´ï¿½ï¿½ï¿½ï¿½
+/*ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½Ë¡ï¿½Ê¹ï¿½ï¿½Unicodeï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªUnicodeï¿½æ±¾ï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½MessageBoxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªMessageBoxWï¿½ï¿½
+ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½Ë¡ï¿½Ê¹ï¿½Ã¶ï¿½ï¿½Ö½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªANSIï¿½ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½MessageBoxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªMessageBoxAï¿½ï¿½
 */
 #include <fstream>
 
@@ -266,9 +266,9 @@ cell eval(cell x, environment* env)
     }
     else if (proc.type == Proc)
         return proc.proc(exps);
-    throw "not a function\n";
-    //std::cout << "not a function\n";
-    //exit(1);
+    std::stringstream buffer;
+    buffer << "not a function '" << x.val << "'";
+    throw buffer.str();
 }
 
 

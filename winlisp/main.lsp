@@ -8,3 +8,5 @@
 any text or comment
 hdc = (hwnd hdc paint_struct)
 append error to log file(notdefinedfunctionerror)
+ref. WhatSize.c - 
+implement SetMapMode,SetWindowOrg,SetViewOrg,SetWindowExtent,SetViewExtent
