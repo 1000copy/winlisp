@@ -24,14 +24,3 @@
         #t
     )
 ))
-there comment go
-triple == hwnd hdc paintstructure
-repeat x action
-repeat y action
-DONE
-    textout 只要指定x,y，不需要指定rect，和drawtext相比，要省事一点。
-    (define! offsets (0 100 100))  ====
-        (define offsets(quote(
-           0 100 100
-        )))
-    (set! a 0 b 1 c 2)

@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <fstream>
+#include <filesystem>
 #include <streambuf>
 #include "..\lisp\lisp.h"
 #include "metric.h"
@@ -275,7 +276,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     apps.push_back(hInstance);
     MSG          msg;
     try {
-        std::ifstream t("main.lsp");
+        //auto path = std::filesystem::current_path(); //getting path
+        std::filesystem::current_path("..\\example\\"); //setting path
+        std::ifstream t("textout.lsp");
         std::stringstream buffer;
         buffer << t.rdbuf();
         run(buffer.str(), &global_env);
