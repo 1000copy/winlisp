@@ -397,3 +397,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 lisp/enc_temp_folder/ef311becf6351befd3ed07a1f3e156/main.cpp
+example/log.txt

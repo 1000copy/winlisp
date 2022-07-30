@@ -1,5 +1,5 @@
 (begin
-    (load 'constants.lsp')    
+    (load '.\lib\constants.lsp')    
     (define onpaint(lambda (hwnd )
         (begin
             (define!  texts(
@@ -26,7 +26,7 @@
             #t
         )
     ))
-    (load 'entry.lsp')
+    (load '.\lib\entry.lsp')
 )
 0x0000001c7fb03480
 0x0000001c7fb03480

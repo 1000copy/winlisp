@@ -238,6 +238,10 @@ cell eval(cell x, environment* env)
     // (proc exp*)
     //log("eval proc:");
     cell proc(eval(x.list[0], env));
+    //ofstream myFile_Handler;
+    //myFile_Handler.open("log.txt", std::ios_base::app);
+    //myFile_Handler << x.list[0].val << endl;
+    //myFile_Handler.close();
     cells exps;
     for (cell::iter exp = x.list.begin() + 1; exp != x.list.end(); ++exp)
         exps.push_back(eval(*exp, env));

@@ -1,5 +1,5 @@
 (begin
-    (load 'constants.lsp')    
+    (load '.\lib\constants.lsp')
     (define onpaint(lambda (hwnd )
         (begin
             (define hdc (beginpaint hwnd ))
@@ -10,5 +10,5 @@
             #t
         )
     ))
-    (load 'entry.lsp')
+    (load '.\lib\entry.lsp')
 )

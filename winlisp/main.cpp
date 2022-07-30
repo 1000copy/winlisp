@@ -221,6 +221,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     catch (std::string msg) {
         //MessageBox(hwnd, msg.c_str(), "error", 0);
         //return DefWindowProc(hwnd, message, wParam, lParam);
+        //SetWindowText(hwnd, msg.c_str());
+        ofstream myFile_Handler;
+        myFile_Handler.open("log.txt", std::ios_base::app);
+        myFile_Handler << msg << endl;
+        myFile_Handler.close();
         haserror = true;
     }else
     
@@ -278,14 +283,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("textout.lsp");
+        std::ifstream t("drawrect.lsp");
         std::stringstream buffer;
         buffer << t.rdbuf();
         run(buffer.str(), &global_env);
     }
     catch (std::string str) {
         ofstream myFile_Handler;
-        // File Open
         myFile_Handler.open("log.txt", std::ios_base::app);
         myFile_Handler << str.c_str() << endl;
         myFile_Handler.close();
