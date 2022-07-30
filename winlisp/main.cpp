@@ -108,7 +108,7 @@ cell proc_textout(const cells& c)
     std::string base(c[3].val.c_str());
     HWND hwnd = str_hwnd(c[0].list[1].val);
     HDC         hdc = str_hdc(c[0].list[2].val);  
-    long left, top, right, bottom;
+    long left, top;
     if (c[2].type != List) {
         left = atol(c[1].val.c_str());
         top = (atol(c[2].val.c_str()));
@@ -118,6 +118,42 @@ cell proc_textout(const cells& c)
         top = atol(c[1].list[1].val.c_str());
     }
     TextOut(hdc, left,top, (LPCSTR)(base.c_str()),base.size());
+    return true_sym;
+}
+cell proc_setwindowtext(const cells& c)
+{
+    HWND hwnd = str_hwnd(c[0].val);
+    std::string str = c[1].val;
+    SetWindowText(hwnd, str.c_str());
+    return true_sym;
+}
+cell proc_setmapmode(const cells& c)
+{
+    long n2(atol(c[0].list[0].val.c_str()));//ps
+    HWND hwnd = str_hwnd(c[0].list[1].val);
+    HDC         hdc = str_hdc(c[0].list[2].val);
+    long mode = atol(c[1].val.c_str());
+    SetMapMode(hdc,mode);
+    return true_sym;
+}
+cell proc_setwindowextent(const cells& c)
+{
+    long n2(atol(c[0].list[0].val.c_str()));//ps
+    HWND hwnd = str_hwnd(c[0].list[1].val);
+    HDC         hdc = str_hdc(c[0].list[2].val);
+    long x = atol(c[1].val.c_str());
+    long y = atol(c[2].val.c_str());
+    SetWindowExtEx(hdc, x, y, NULL);
+    return true_sym;
+}
+cell proc_setviewextent(const cells& c)
+{
+    long n2(atol(c[0].list[0].val.c_str()));//ps
+    HWND hwnd = str_hwnd(c[0].list[1].val);
+    HDC         hdc = str_hdc(c[0].list[2].val);
+    long x = atol(c[1].val.c_str());
+    long y = atol(c[2].val.c_str());
+    SetViewportExtEx(hdc, x, y, NULL);
     return true_sym;
 }
 cell proc_line(const cells& c)
@@ -268,7 +304,10 @@ void add_winglobals() {
     global_env["quit"] = cell(&proc_quit);    
     global_env["load"] = cell(&proc_load);
     global_env["textout"] = cell(&proc_textout);
-    
+    global_env["setmapmode"] = cell(&proc_setmapmode);
+    global_env["setwindowextent"] = cell(&proc_setwindowextent);
+    global_env["setviewextent"] = cell(&proc_setviewextent);
+    global_env["setwindowtext"] = cell(&proc_setwindowtext);
 }
 
 
@@ -283,7 +322,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("drawrect.lsp");
+        std::ifstream t("mapmode.lsp");
         std::stringstream buffer;
         buffer << t.rdbuf();
         run(buffer.str(), &global_env);
