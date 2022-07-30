@@ -189,7 +189,7 @@ cell eval(cell x, environment* env)
                     return a;
             }
         }
-        if (x.list[0].val == "define") {      // (define var exp)
+        if (x.list[0].val == "define" || x.list[0].val == "def") {      // (define var exp)
             size_t count = (x.list.size()-1) / 2;
             for (int i = 0; i < count ; i++) {
                 cell a = eval(x.list[2*i+2], env);
@@ -198,7 +198,7 @@ cell eval(cell x, environment* env)
                     return a;
             }
         }
-        if (x.list[0].val == "define!") {      // (define var exp)
+        if (x.list[0].val == "define!" || x.list[0].val == "def!") {      // (define var exp)
             size_t count = (x.list.size() - 1) / 2;
             for (int i = 0; i < count; i++) {
                 cell a = x.list[2 * i + 2];

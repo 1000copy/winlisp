@@ -1,8 +1,8 @@
 (begin
     (load '.\lib\constants.lsp')    
-    (define onpaint(lambda (hwnd )
+    (def onpaint(lambda (hwnd )
         (begin
-            (define!  texts(
+            (def!  texts(
                     (--- --- --- )
                     ('ab c' abd 3 )
                     (1 2 3 )
@@ -12,12 +12,12 @@
                     20 100 250
                 )
             )
-            (define triple (beginpaint hwnd ))
-            (define x 0 y 0 offset 0)
+            (def triple (beginpaint hwnd ))
+            (def x 0 y 0 offset 0)
             (repeat 4(begin
                 (repeat 3 (begin
                     (set! offset (nth offsets x))
-                    (define hdc (nth triple 2))
+                    (def hdc (nth triple 2))
                     (textout hdc offset (* y 15) (nth (nth texts y) x))
                     (set! x(+ x 1 ))
                 ))     
