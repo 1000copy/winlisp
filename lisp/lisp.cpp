@@ -1,12 +1,4 @@
-// �������з���
-// VsDevCmd.bat
-// cl  user32.lib gdi32.lib wisp.cpp
-// ���DrawText������� ��save��cpp file encoded by UTF-16 LE
-// ������IDE�����ڣ����Ļ����롣�㲻����
-//  �㶨����IDE�ڵ��ַ���Ĭ�ϵ�UNICODE�ĳ�δ���á������޸ķ�����Project���� - �߼� - �ַ��� - UNICODE ѡ���Ϊ δ����
-/*���ѡ���ˡ�ʹ��Unicode�ַ���������������õ���API������ΪUnicode�汾��API�������W��API������MessageBox������ΪMessageBoxW��
-���ѡ���ˡ�ʹ�ö��ֽ��ַ���������������õ���API������ΪANSI����汾��API�������A��API������MessageBox������ΪMessageBoxA��
-*/
+
 #include <fstream>
 
 #include "lisp.h"
@@ -189,7 +181,7 @@ cell eval(cell x, environment* env)
         if (x.list[0].val == "if")          // (if test conseq [alt])
             return eval(eval(x.list[1], env).val == "#f" ? (x.list.size() < 4 ? nil : x.list[3]) : x.list[2], env);
         if (x.list[0].val == "set!") {        // (set! var exp)
-            int count = (x.list.size() - 1) / 2;
+            size_t count = (x.list.size() - 1) / 2;
             for (int i = 0; i < count; i++) {
                 cell a = eval(x.list[2 * i + 2], env);
                 env->find(x.list[2 * i + 1].val)[x.list[2 * i + 1].val] = a;
@@ -198,7 +190,7 @@ cell eval(cell x, environment* env)
             }
         }
         if (x.list[0].val == "define") {      // (define var exp)
-            int count = (x.list.size()-1) / 2;
+            size_t count = (x.list.size()-1) / 2;
             for (int i = 0; i < count ; i++) {
                 cell a = eval(x.list[2*i+2], env);
                 (*env)[x.list[2 * i + 1].val] = a;
@@ -207,7 +199,7 @@ cell eval(cell x, environment* env)
             }
         }
         if (x.list[0].val == "define!") {      // (define var exp)
-            int count = (x.list.size() - 1) / 2;
+            size_t count = (x.list.size() - 1) / 2;
             for (int i = 0; i < count; i++) {
                 cell a = x.list[2 * i + 2];
                 (*env)[x.list[2 * i + 1].val] = a;
