@@ -17,7 +17,8 @@
             (repeat 4(begin
                 (repeat 3 (begin
                     (set! offset (nth offsets x))
-                    (textout triple offset (* y 15) (nth (nth texts y) x))
+                    (define hdc (nth triple 2))
+                    (textout hdc offset (* y 15) (nth (nth texts y) x))
                     (set! x(+ x 1 ))
                 ))     
                 (set! y(+ y 1 ) x 0)

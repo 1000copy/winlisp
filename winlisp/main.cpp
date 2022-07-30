@@ -72,14 +72,14 @@ cell proc_create1(const cells& c) {
 }
 cell proc_drawtext(const cells& c)
 {
-
-    long n2(atol(c[0].list[0].val.c_str()));//ps
+    //long n2(atol(c[0].list[0].val.c_str()));//ps
     std::string base(c[1].val.c_str());
     //HWND hwnd = hwnds[n0];
     //HDC         hdc = hdcs[n1]; //hdc
-    HWND hwnd = str_hwnd(c[0].list[1].val);
-    HDC         hdc = str_hdc(c[0].list[2].val);
+    //HWND hwnd = str_hwnd(c[0].list[1].val);
+    //HDC         hdc = str_hdc(c[0].list[2].val);
     //PAINTSTRUCT ps = pss[n2]; //ps    
+    HDC         hdc = str_hdc(c[0].val);
     long left, top, right, bottom;
     if (c[2].type != List) {
         left = atol(c[2].val.c_str());
@@ -164,8 +164,9 @@ cell proc_line(const cells& c)
     //long n2(atol(c[0].list[0].val.c_str()));//ps
     //HWND hwnd = hwnds[n0];
     //HDC         hdc = hdcs[n1]; //hdc
-    HWND hwnd = str_hwnd(c[0].list[1].val);
-    HDC         hdc = str_hdc(c[0].list[2].val);    
+/*    HWND hwnd = str_hwnd(c[0].list[1].val);
+    HDC         hdc = str_hdc(c[0].list[2].val); */  
+    HDC         hdc = str_hdc(c[0].val);
     long left(atol(c[1].val.c_str()));
     long top(atol(c[2].val.c_str()));
     long right(atol(c[3].val.c_str()));
@@ -325,7 +326,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("mapmode.lsp");
+        std::ifstream t("helloworld.lsp");
         std::stringstream buffer;
         buffer << t.rdbuf();
         run(buffer.str(), &global_env);
