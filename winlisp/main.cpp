@@ -103,11 +103,11 @@ cell proc_drawtext(const cells& c)
 }
 cell proc_textout(const cells& c)
 {
-
-    long n2(atol(c[0].list[0].val.c_str()));//ps
-    std::string base(c[3].val.c_str());
-    HWND hwnd = str_hwnd(c[0].list[1].val);
-    HDC         hdc = str_hdc(c[0].list[2].val);  
+    //long n2(atol(c[0].list[0].val.c_str()));//ps
+    //HWND hwnd = str_hwnd(c[0].list[1].val);
+    //HDC         hdc = str_hdc(c[0].list[2].val);
+    std::string base(c[3].val.c_str()); 
+    HDC         hdc = str_hdc(c[0].val);
     long left, top;
     if (c[2].type != List) {
         left = atol(c[1].val.c_str());
@@ -129,18 +129,20 @@ cell proc_setwindowtext(const cells& c)
 }
 cell proc_setmapmode(const cells& c)
 {
-    long n2(atol(c[0].list[0].val.c_str()));//ps
-    HWND hwnd = str_hwnd(c[0].list[1].val);
-    HDC         hdc = str_hdc(c[0].list[2].val);
+    //long n2(atol(c[0].list[0].val.c_str()));//ps
+    //HWND hwnd = str_hwnd(c[0].list[1].val);
+    //HDC         hdc = str_hdc(c[0].list[2].val);
+    HDC         hdc = str_hdc(c[0].val);
     long mode = atol(c[1].val.c_str());
     SetMapMode(hdc,mode);
     return true_sym;
 }
 cell proc_setwindowextent(const cells& c)
 {
-    long n2(atol(c[0].list[0].val.c_str()));//ps
-    HWND hwnd = str_hwnd(c[0].list[1].val);
-    HDC         hdc = str_hdc(c[0].list[2].val);
+    //long n2(atol(c[0].list[0].val.c_str()));//ps
+    //HWND hwnd = str_hwnd(c[0].list[1].val);
+    //HDC         hdc = str_hdc(c[0].list[2].val);
+    HDC         hdc = str_hdc(c[0].val);
     long x = atol(c[1].val.c_str());
     long y = atol(c[2].val.c_str());
     SetWindowExtEx(hdc, x, y, NULL);
@@ -148,9 +150,10 @@ cell proc_setwindowextent(const cells& c)
 }
 cell proc_setviewextent(const cells& c)
 {
-    long n2(atol(c[0].list[0].val.c_str()));//ps
-    HWND hwnd = str_hwnd(c[0].list[1].val);
-    HDC         hdc = str_hdc(c[0].list[2].val);
+    //long n2(atol(c[0].list[0].val.c_str()));//ps
+    //HWND hwnd = str_hwnd(c[0].list[1].val);
+    //HDC         hdc = str_hdc(c[0].list[2].val);
+    HDC         hdc = str_hdc(c[0].val);
     long x = atol(c[1].val.c_str());
     long y = atol(c[2].val.c_str());
     SetViewportExtEx(hdc, x, y, NULL);
