@@ -63,7 +63,7 @@ struct environment {
         if (outer_)
             return outer_->find(var); // attempt to find the symbol in some "outer" env
         std::stringstream buffer;
-        buffer << "unbound symbol '" << var << "'";
+        buffer << "unbound symbol '" << var << "' WARNING :single quote is string delimeter,not double quote";
         throw buffer.str();
     }
 

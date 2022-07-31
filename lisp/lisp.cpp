@@ -3,7 +3,7 @@
 
 #include "lisp.h"
 char delimiter = '\'';
-char delimiter1 = '"';
+char delimiter1 = '\'';
 char leftp = '('; //'[';
 char rightp = ')';//']';
 // return given mumber as a string

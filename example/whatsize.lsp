@@ -1,12 +1,12 @@
 (begin
     (load '.\lib\constants.lsp')
     (def! texts (
-        (MM_TEXT "MM_TEXT")
-        (MM_LOMETRIC "MM_LOMETRIC")
-        (MM_HIMETRIC "MM_HIMETRIC")
-        (MM_LOENGLISH "MM_LOENGLISH")
-        (MM_HIENGLISH "MM_HIENGLISH")
-        (MM_TWIPS "MM_TWIPS")
+        (MM_TEXT 'MM_TEXT')
+        (MM_LOMETRIC 'MM_LOMETRIC')
+        (MM_HIMETRIC 'MM_HIMETRIC')
+        (MM_LOENGLISH 'MM_LOENGLISH')
+        (MM_HIENGLISH 'MM_HIENGLISH')
+        (MM_TWIPS 'MM_TWIPS')
     ))
     (def! offsets(
             20 100 250 300
