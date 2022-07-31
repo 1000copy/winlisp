@@ -117,13 +117,18 @@ cell proc_textout(const cells& c)
         left = atol(c[1].list[0].val.c_str());
         top = atol(c[1].list[1].val.c_str());
     }
-    TextOut(hdc, left,top, (LPCSTR)(base.c_str()),base.size());
+    TextOut(hdc, left,top, (LPCSTR)(base.c_str()),
+        (int)base.size());
     return true_sym;
 }
 cell proc_setwindowtext(const cells& c)
 {
     HWND hwnd = str_hwnd(c[0].val);
-    std::string str = c[1].val;
+    std::string str;
+    if (c[1].type == List)
+        str = to_string1(c[1].list);
+    else
+        str = c[1].val;
     SetWindowText(hwnd, str.c_str());
     return true_sym;
 }
@@ -184,8 +189,41 @@ cell proc_getclientrect(const cells& c) {
     HWND hwnd = hw;
     //HWND hwnd = hwnds[n0];
     GetClientRect(hwnd, &rect);
+    //long mapmode(atol(c[1].val.c_str()));
+    //long left(atol(c[1].val.c_str()));
+    //long top(atol(c[2].val.c_str()));
+    //long right(atol(c[3].val.c_str()));
+    //long bottom(atol(c[4].val.c_str()));
     std::ostringstream stream;
     stream << "(list " << rect.left << " " <<rect.top << " " << rect.right << " "<< rect.bottom << " " << " )";
+    return run(stream.str(), &global_env);
+}
+//(def rect(lr2dr hdc mapmode rect))
+cell proc_lr2dr(const cells& c) {
+    //RECT        rect;
+    //DWORD64 n1(_atoi64(c[0].val.c_str()));
+    //HWND hw = (HWND)n1;
+    //HWND hwnd = hw;
+    //HWND hwnd = hwnds[n0];
+    //GetClientRect(hwnd, &rect);
+    HDC         hdc = str_hdc(c[0].val);
+    long mapmode = atol(c[1].val.c_str()); 
+    long left = atol(c[2].list[0].val.c_str());
+    long top = atol(c[2].list[1].val.c_str());
+    long right = atol(c[2].list[2].val.c_str());
+    long bottom = atol(c[2].list[3].val.c_str());
+
+    RECT        rect = { 0 };
+    rect.left = left;//10;
+    rect.top = top;//10;
+    rect.right = right;//200;
+    rect.bottom = bottom;//100;
+    SaveDC(hdc);
+    SetMapMode(hdc, mapmode);
+    DPtoLP(hdc, (PPOINT)&rect, 2);
+    RestoreDC(hdc, -1);
+    std::ostringstream stream;
+    stream << "(list " << rect.left << " " << rect.top << " " << rect.right << " " << rect.bottom << " " << " )";
     return run(stream.str(), &global_env);
 }
 PAINTSTRUCT ps;
@@ -312,6 +350,7 @@ void add_winglobals() {
     global_env["setwindowextent"] = cell(&proc_setwindowextent);
     global_env["setviewextent"] = cell(&proc_setviewextent);
     global_env["setwindowtext"] = cell(&proc_setwindowtext);
+    global_env["lr2dr"] = cell(&proc_lr2dr);
 }
 
 
@@ -326,7 +365,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("mapmode.lsp");
+        std::ifstream t("whatsize.lsp");
         std::stringstream buffer;
         buffer << t.rdbuf();
         run(buffer.str(), &global_env);
