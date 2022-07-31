@@ -3,6 +3,7 @@
 
 #include "lisp.h"
 char delimiter = '\'';
+char delimiter1 = '"';
 char leftp = '('; //'[';
 char rightp = ')';//']';
 // return given mumber as a string
@@ -10,7 +11,7 @@ std::string str(long n) { std::ostringstream os; os << n; return os.str(); }
 
 // return true iff given character is '0'..'9'
 bool isdig(char c) { return isdigit(static_cast<unsigned char>(c)) != 0; }
-bool isstr(char c) { return c == delimiter; }
+bool isstr(char c) { return c == delimiter || c==delimiter1; }
 
 
 
@@ -162,7 +163,8 @@ void add_globals(environment& env)
 
 ////////////////////// eval
 cell run(std::string str, environment* env) {
-    return eval(read(str), env);
+        return eval(read(str), env);
+    
 }
 cell eval(cell x, environment* env)
 {
@@ -282,7 +284,7 @@ std::list<std::string> tokenize(const std::string& str)
             tokens.push_back(*s++ == leftp ? "(" : ")");
         else if (*s == delimiter) {
             const char* t = s + 1;
-            while (*t && *t != delimiter)
+            while (*t && *t != delimiter && *t != delimiter1)
                 ++t;
             tokens.push_back(std::string(s, t + 1));
             s = t + 1;

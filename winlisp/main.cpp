@@ -132,6 +132,22 @@ cell proc_setwindowtext(const cells& c)
     SetWindowText(hwnd, str.c_str());
     return true_sym;
 }
+cell proc_trap(const cells& c)
+{
+    HWND hwnd = str_hwnd(c[0].val);
+    std::string str= c[1].val;
+    str = eval(c[1], &global_env).val;
+    SetWindowText(hwnd, str.c_str());
+    return true_sym;
+}
+cell proc_eval(const cells& c)
+{
+    //HWND hwnd = str_hwnd(c[0].val);
+    //std::string str = c[1].val;
+    //str = eval(c[1], &global_env).val;
+    //SetWindowText(hwnd, str.c_str());
+    return eval(c[0], &global_env);
+}
 cell proc_setmapmode(const cells& c)
 {
     //long n2(atol(c[0].list[0].val.c_str()));//ps
@@ -304,6 +320,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         myFile_Handler.open("log.txt", std::ios_base::app);
         myFile_Handler << msg << endl;
         myFile_Handler.close();
+        exit(2);
         haserror = true;
     }else
     
@@ -351,6 +368,8 @@ void add_winglobals() {
     global_env["setviewextent"] = cell(&proc_setviewextent);
     global_env["setwindowtext"] = cell(&proc_setwindowtext);
     global_env["lr2dr"] = cell(&proc_lr2dr);
+    global_env["trap"] = cell(&proc_trap);
+    global_env["eval"] = cell(&proc_eval);
 }
 
 
