@@ -274,11 +274,10 @@ PAINTSTRUCT ps;
 cell proc_beginpaint(const cells& c) {
     HWND hwnd = str_hwnd(c[0].val);
     HDC         hdc;
-    
-    //RECT        rect;
-    std::ostringstream stringStream;
-    
+  
     hdc = BeginPaint(hwnd, &ps);
+
+    std::ostringstream stringStream;
     UINT64 a = (UINT64)((void*)&ps);
     PAINTSTRUCT* qq = &ps;
     PAINTSTRUCT* pp = (PAINTSTRUCT*)((void*)a);    
@@ -291,7 +290,11 @@ cell proc_endpaint(const cells& c) {
     long n2(atol(c[0].list[0].val.c_str()));//ps
     HWND hwnd = str_hwnd(c[0].list[1].val);        
     PAINTSTRUCT* ps1 = str_ps(c[0].list[3].val);
+
+    
+
     EndPaint(hwnd, ps1);
+
     //pss.pop_back();
     return true_sym;
 }
@@ -354,6 +357,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     
     switch (message)
     {
+    case WM_CHAR:
+        RECT        rect;
+        GetClientRect(hwnd, &rect);
+        ScrollWindowEx(hwnd, 0, -20, &rect, &rect,NULL,NULL,0);
+        break;
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
