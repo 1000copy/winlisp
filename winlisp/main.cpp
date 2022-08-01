@@ -51,6 +51,34 @@ std::vector<HINSTANCE> apps;
 environment global_env;
 ATOM registerclass(HINSTANCE hInstance, std::string app);
 HWND createwindow(HINSTANCE hInstance, std::string app);
+typedef struct tagtriple {
+    int  cxChar, cyChar, cxCaps;
+} triple;
+triple gettextmetrics(HWND hwnd) {
+    triple t;
+    HDC         hdc;
+    TEXTMETRIC  tm;
+    hdc = GetDC(hwnd);
+    GetTextMetrics(hdc, &tm);
+    t.cxChar = tm.tmAveCharWidth;
+    t.cyChar = tm.tmHeight + tm.tmExternalLeading;
+    t.cxCaps = (tm.tmPitchAndFamily & 1 ? 3 : 2) * t.cxChar / 2;
+    ReleaseDC(hwnd, hdc);
+    return t;
+}
+cell proc_gettextmetrics(const cells& c) {
+    HWND hwnd = str_hwnd(c[0].val);
+    cell result(List);
+    triple t = gettextmetrics(hwnd);
+    cell c1(Number,std::to_string(t.cxChar));
+    result.list.push_back(c1);
+    cell c2(Number, std::to_string(t.cyChar));
+    result.list.push_back(c2);
+    cell c3(Number, std::to_string(t.cxCaps));
+    result.list.push_back(c3);
+    return result;
+}
+
 cell proc_app(const cells& c) {
     return cell(Number, "0");
 }
@@ -370,6 +398,8 @@ void add_winglobals() {
     global_env["lr2dr"] = cell(&proc_lr2dr);
     global_env["trap"] = cell(&proc_trap);
     global_env["eval"] = cell(&proc_eval);
+    global_env["gettextmetrics"] = cell(&proc_gettextmetrics);
+    
 }
 
 
@@ -384,7 +414,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("chap05-whatsize.lsp");
+        std::ifstream t("gettextmetrics.lsp");
         std::stringstream buffer;
         buffer << t.rdbuf();
         run(buffer.str(), &global_env);
