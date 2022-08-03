@@ -4,7 +4,7 @@
 #include <streambuf>
 #include "..\lisp\lisp.h"
 #include "metric.h"
-
+#include "listview.h"
 
 
 PAINTSTRUCT* str_ps(std::string str) {
@@ -322,6 +322,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     //char buff[100];
     cell a;
     std::string str;
+    HWND hList;
+    RECT rcClient;
     //if (message == WM_PAINT || WM_CREATE == message)return 0;
     if(!haserror)
     try {
@@ -350,10 +352,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         myFile_Handler.close();
         exit(2);
         haserror = true;
-    }else
+    }
     
+        
     switch (message)
     {
+    case WM_CREATE:
+        GetClientRect(hwnd, &rcClient);
+        hList = CreateListView(hwnd, 101, rcClient);
+        InsertColumn(hList);
+        AppendItem(hList);
+        return 0;
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -401,7 +410,7 @@ void add_winglobals() {
     global_env["gettextmetrics"] = cell(&proc_gettextmetrics);
     
 }
-
+#include "listview.h"
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 //int WINAPI //WinMain    (HINSTANCE hInstance, HINSTANCE hPrevInstance,    PSTR szCmdLine, int iCmdShow)  

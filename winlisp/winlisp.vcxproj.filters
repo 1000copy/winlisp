@@ -24,12 +24,18 @@
     <ClCompile Include="metrics.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="listview.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lisp\lisp.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="metric.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="listview.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
