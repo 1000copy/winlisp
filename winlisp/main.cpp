@@ -311,6 +311,67 @@ cell proc_textout(const cells& c)
         (int)base.size());
     return true_sym;
 }
+cell proc_lv_create(const cells& c)
+{
+    HWND hwnd = str_hwnd(c[0].val);
+    long left, top, right, bottom;
+    long base = 1;
+    if (c[base].type != List) {
+        left = atol(c[base].val.c_str());
+        top = (atol(c[base+1].val.c_str()));
+        right = (atol(c[base + 2].val.c_str()));
+        bottom = (atol(c[base + 3].val.c_str()));
+    }
+    else {
+        left = atol(c[base].list[0].val.c_str());
+        top = atol(c[base].list[1].val.c_str());
+        right = atol(c[base].list[2].val.c_str());
+        bottom = atol(c[base].list[3].val.c_str());
+    }
+    RECT        rect = { 0 };
+    rect.left = left;//10;
+    rect.top = top;//10;
+    rect.right = right;//200;
+    rect.bottom = bottom;//100;
+    HWND hList = CreateListView(hwnd, 101, rect);    
+    cell result(String, hwnd_str(hList));
+    return result;
+}
+cell proc_lv_setcolumns(const cells& c)
+{
+    HWND hList = str_hwnd(c[0].val);    
+    LVCOLUMN  LvCol;
+    memset(&LvCol, 0, sizeof(LvCol));
+    LvCol.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
+    for (int i = 0; i < c[1].list.size(); i++) {
+        LvCol.cx = 100;
+        std::string c1 = c[1].list[i].val;
+        LvCol.pszText = (LPSTR)c1.c_str();
+        SendMessage(hList, LVM_INSERTCOLUMN, i, (LPARAM)&LvCol);
+    }    
+    return true_sym;
+}
+cell proc_lv_appenditem(const cells& c)
+{
+    HWND hList = str_hwnd(c[0].val);
+    LVITEM LvItem;    
+    LVCOLUMN  LvCol;
+    memset(&LvItem, 0, sizeof(LvItem)); // Zero struct's Members    
+    LvItem.mask = LVIF_TEXT;   // Text Style
+    LvItem.cchTextMax = 256; // Max size of test
+    LvItem.iItem = 0;          // choose item  
+    LvItem.iSubItem = 0;       // Put in first coluom
+    LvItem.pszText = (LPSTR)(c[1].list[0].val.c_str());
+    SendMessage(hList, LVM_INSERTITEM, 0, (LPARAM)&LvItem); // Send info to the Listview
+
+    for (int i = 1; i < c[1].list.size(); i++) // Add SubItems in a loop
+    {
+        LvItem.iSubItem = i;        
+        LvItem.pszText = (LPSTR)(c[1].list[i].val.c_str());
+        SendMessage(hList, LVM_SETITEM, 0, (LPARAM)&LvItem); // Enter text to SubItems
+    }    
+    return true_sym;
+}
 cell proc_setwindowtext(const cells& c)
 {
     HWND hwnd = str_hwnd(c[0].val);
@@ -523,10 +584,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_CREATE:
-        GetClientRect(hwnd, &rcClient);
-        hList = CreateListView(hwnd, 101, rcClient);
-        InsertColumn(hList);
-        AppendItem(hList);
+        
         return 0;
 
     //case WM_CREATE:
@@ -602,6 +660,9 @@ void add_winglobals() {
     global_env["trap"] = cell(&proc_trap);
     global_env["eval"] = cell(&proc_eval);
     global_env["gettextmetrics"] = cell(&proc_gettextmetrics);
+    global_env["lv_create"] = cell(&proc_lv_create);
+    global_env["lv_setcolumns"] = cell(&proc_lv_setcolumns);
+    global_env["lv_appenditem"] = cell(&proc_lv_appenditem);
     
 }
 #include "listview.h"
@@ -617,7 +678,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("gettextmetrics.lsp");
+        std::ifstream t("listview.lsp");
         std::stringstream buffer;
         buffer << t.rdbuf();
         run(buffer.str(), &global_env);

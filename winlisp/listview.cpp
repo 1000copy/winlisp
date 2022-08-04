@@ -1,5 +1,6 @@
 #include "listview.h"
 #include <tchar.h>
+//depreciated
 void InsertColumn(HWND hList) {
     LVCOLUMN  LvCol;
     memset(&LvCol, 0, sizeof(LvCol));
@@ -8,12 +9,13 @@ void InsertColumn(HWND hList) {
     LvCol.pszText = (LPSTR)"Item";
     SendMessage(hList, LVM_INSERTCOLUMN, 0, (LPARAM)&LvCol);
     LvCol.cx = 200;
-    LvCol.pszText = (LPSTR)"Sub Item1";
+    LvCol.pszText = (LPSTR)"Sub Item111";
     SendMessage(hList, LVM_INSERTCOLUMN, 1, (LPARAM)&LvCol);
     LvCol.cx = 300;
     LvCol.pszText = (LPSTR)"Sub Item2";
     SendMessage(hList, LVM_INSERTCOLUMN, 2, (LPARAM)&LvCol);
 }
+//depreciated
 void AppendItem(HWND hList) {
     LVITEM LvItem;
     TCHAR buffer[256];
