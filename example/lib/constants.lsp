@@ -1,4 +1,5 @@
 (begin
+    (def    WM_CHAR 258)
     (define 
         WM_CREATE   1
         WM_PAINT    15
@@ -120,3 +121,4 @@
         SM_SYSTEMDOCKED           0x2004
     )
 ) 
+HEX NUMBER support 258 0x0102 WM_CHAR

@@ -93,7 +93,7 @@
             #t
         )
     ))
-    (define winproc (lambda (hwnd msg )
+    (define winproc (lambda (hwnd msg wp lp)
         (begin
             (if (= WM_CREATE msg)(oncreate hwnd))
             (if (= WM_DESTROY msg)(quit) )

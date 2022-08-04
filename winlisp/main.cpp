@@ -141,7 +141,7 @@ cell proc_drawtext(const cells& c)
     //HWND hwnd = str_hwnd(c[0].list[1].val);
     //HDC         hdc = str_hdc(c[0].list[2].val);
     //PAINTSTRUCT ps = pss[n2]; //ps    
-    HDC         hdc = para_str_hdc(c[0].list[2].val);
+    HDC         hdc = para_str_hdc(c[0].val);
     RECT        rect = { 0 };
     para_getrect(c, 2, rect);
     DrawText(hdc, (LPCSTR)(base.c_str()), -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);    
@@ -398,7 +398,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         str = "(winproc  ";
         str += para_hwnd_str(hwnd);
         str += " ";
-        str += std::to_string(message);        
+        str += std::to_string(message);
+        str += " ";
+        str += std::to_string(wParam);
+        str += " ";
+        str += std::to_string(lParam);
         str += ")";
         a = run(str, &global_env);
         HWND hw = (HWND)((DWORD64)hwnd);
@@ -517,7 +521,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("sysmet1.lsp");
+        std::ifstream t("keyview.lsp");
+        //std::ifstream t("helloworld.lsp");
+        /*std::ifstream t("drawrect.lsp");*/
+        /*std::ifstream t("gettextmetrics.lsp");*/
+        /*std::ifstream t("lp2dp.lsp");*/
+        /*std::ifstream t("mapmode.lsp");*/
+        //std::ifstream t("sysmet1.lsp");
+        //std::ifstream t("textout.lsp");
         std::stringstream buffer;
         buffer << t.rdbuf();
         run(buffer.str(), &global_env);
