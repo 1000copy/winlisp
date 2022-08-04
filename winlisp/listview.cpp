@@ -52,8 +52,8 @@ HWND CreateListView(HWND hwndParent, int ID, RECT rcClient)
     // Create the list-view window in report view with label editing enabled.    
     HWND hWndListView = CreateWindow(WC_LISTVIEW, //ERROR red line under create window
         (LPSTR)"yach",
-        //WS_CHILD | LVS_REPORT | LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT,
-        WS_CHILD | LVS_REPORT | LVS_EX_GRIDLINES ,
+        WS_CHILD | LVS_REPORT | LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT,
+        //WS_CHILD | LVS_REPORT | LVS_EX_GRIDLINES ,
         rcClient.left, rcClient.top,
         rcClient.right, rcClient.bottom,
         hwndParent,
