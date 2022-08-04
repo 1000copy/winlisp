@@ -4,10 +4,11 @@
             (SM_CXSCREEN 'SM_CXSCREEN' 'Screen width in pixels')
             (SM_CYSCREEN 'SM_CYSCREEN' 'Screen height in pixels')   
     ))
+    (define hlistview 0)
     (define oncreate (lambda (hwnd )        
         (begin
             (def rect(getclientrect hwnd))
-            (def hlistview(lv_create hwnd rect))
+            (set! hlistview(lv_create hwnd rect))
             (lv_setcolumns hlistview (list 'id' 'name' 'comment') (list 200 150 250))
             (def i 0 id 0 c1 0 c2 0)
             (repeat (length texts)(begin
@@ -22,7 +23,9 @@
     ))
     (define keyview (lambda (hwnd msg wp lp)
         (begin
-            (setwindowtext hwnd lp)
+            (def keyname (GetKeyNameText lp))
+            (setwindowtext hwnd keyname)
+            (lv_appenditem hlistview 0 (list  keyname keyname keyname))
             #t
         )
     ))

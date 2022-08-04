@@ -94,6 +94,13 @@ triple gettextmetrics(HWND hwnd) {
     ReleaseDC(hwnd, hdc);
     return t;
 }
+cell proc_GetKeyNameText(const cells& c) {
+    LPARAM l = atol(c[0].val.c_str());    
+    TCHAR        szKeyName[32];
+    GetKeyNameText(l, szKeyName,sizeof(szKeyName) / sizeof(TCHAR));
+    cell result(String,szKeyName);
+    return result;
+}
 cell proc_gettextmetrics(const cells& c) {
     HWND hwnd = para_str_hwnd(c[0].val);
     cell result(List);
@@ -506,6 +513,7 @@ void add_winglobals() {
     global_env["lv_create"] = cell(&proc_lv_create);
     global_env["lv_setcolumns"] = cell(&proc_lv_setcolumns);
     global_env["lv_appenditem"] = cell(&proc_lv_appenditem);
+    global_env["GetKeyNameText"] = cell(&proc_GetKeyNameText);
     
 }
 #include "listview.h"
