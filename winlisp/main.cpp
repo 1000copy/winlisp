@@ -6,15 +6,36 @@
 #include "metric.h"
 #include "listview.h"
 
+void para_getrect(const cells& c, int base, RECT& rect) {
+    long left, top, right, bottom;
+    if (c[base].type != List) {
+        left = atol(c[base].val.c_str());
+        top = (atol(c[base + 1].val.c_str()));
+        right = (atol(c[base + 2].val.c_str()));
+        bottom = (atol(c[base + 3].val.c_str()));
+    }
+    else {
+        left = atol(c[base].list[0].val.c_str());
+        top = atol(c[base].list[1].val.c_str());
+        right = atol(c[base].list[2].val.c_str());
+        bottom = atol(c[base].list[3].val.c_str());
+    }
+    rect.left = left;//10;
+    rect.top = top;//10;
+    rect.right = right;//200;
+    rect.bottom = bottom;//100;
+}
 
-
-
-PAINTSTRUCT* str_ps(std::string str) {
+PAINTSTRUCT* para_str_ps(std::string str) {
     UINT64 n1(strtoull(str.c_str(), NULL, 0));
     PAINTSTRUCT* pp = (PAINTSTRUCT*)((void*)n1);
     return pp;
 }
-std::string ps_str(PAINTSTRUCT* p) {
+void para_str_ps_r(std::string str, PAINTSTRUCT& ps) {
+    UINT64 n1(strtoull(str.c_str(), NULL, 0));
+    ps = *((PAINTSTRUCT*)((void*)n1));    
+}
+std::string para_ps_str(PAINTSTRUCT* p) {
     UINT64 a = (UINT64)((void*)p);
     std::ostringstream os;
     os << "'";
@@ -23,25 +44,30 @@ std::string ps_str(PAINTSTRUCT* p) {
     return os.str();
 }
 
-HWND str_hwnd(std::string str) {
+HWND para_str_hwnd(std::string str) {
     DWORD64 n1(_atoi64(str.c_str()));
     return (HWND)n1;
 }
-std::string hwnd_str(HWND  hwnd) {
+std::string para_hwnd_str(HWND  hwnd) {
     return std::to_string((DWORD64)hwnd);
 }
 
-HDC str_hdc(std::string str) {
+HDC para_str_hdc(std::string str) {
     UINT64 n1(strtoull(str.c_str(), NULL, 0));
     return (HDC)n1;
 }
-std::string hdc_str(HDC  hwnd) {
+std::string para_hdc_str(HDC  hwnd) {
     std::ostringstream os;
     os << "'";
     os << (UINT64)hwnd;
     os << "'";
     return os.str();
     //return std::to_string((UINT64)hwnd);
+}
+void para_gettriple(const cells& c, int base, HWND& hwnd, HDC& hdc, PAINTSTRUCT& ps) {
+    hwnd = para_str_hwnd(c[base].list[0].val);
+    hdc = para_str_hdc(c[base].list[2].val);
+    para_str_ps_r(c[base].list[1].val,ps);
 }
 cell proc_load(const cells& c);
 cell proc_drawtext(const cells& c);
@@ -69,7 +95,7 @@ triple gettextmetrics(HWND hwnd) {
     return t;
 }
 cell proc_gettextmetrics(const cells& c) {
-    HWND hwnd = str_hwnd(c[0].val);
+    HWND hwnd = para_str_hwnd(c[0].val);
     cell result(List);
     triple t = gettextmetrics(hwnd);
     cell c1(Number,std::to_string(t.cxChar));
@@ -105,6 +131,7 @@ cell proc_create1(const cells& c) {
     UpdateWindow(hwnd);
     return cell(Number, "11");
 }
+
 cell proc_drawtext(const cells& c)
 {
     //long n2(atol(c[0].list[0].val.c_str()));//ps
@@ -114,25 +141,9 @@ cell proc_drawtext(const cells& c)
     //HWND hwnd = str_hwnd(c[0].list[1].val);
     //HDC         hdc = str_hdc(c[0].list[2].val);
     //PAINTSTRUCT ps = pss[n2]; //ps    
-    HDC         hdc = str_hdc(c[0].val);
-    long left, top, right, bottom;
-    if (c[2].type != List) {
-        left = atol(c[2].val.c_str());
-        top = (atol(c[3].val.c_str()));
-        right = (atol(c[4].val.c_str()));
-        bottom = (atol(c[5].val.c_str()));
-    }
-    else {
-        left = atol(c[2].list[0].val.c_str());
-        top = atol(c[2].list[1].val.c_str());
-        right = atol(c[2].list[2].val.c_str());
-        bottom = atol(c[2].list[3].val.c_str());
-    }
-    RECT        rect = {0};
-    rect.left = left;//10;
-    rect.top = top;//10;
-    rect.right = right;//200;
-    rect.bottom = bottom;//100;
+    HDC         hdc = para_str_hdc(c[0].list[2].val);
+    RECT        rect = { 0 };
+    para_getrect(c, 2, rect);
     DrawText(hdc, (LPCSTR)(base.c_str()), -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);    
     return true_sym;
 }
@@ -142,7 +153,7 @@ cell proc_textout(const cells& c)
     //HWND hwnd = str_hwnd(c[0].list[1].val);
     //HDC         hdc = str_hdc(c[0].list[2].val);
     std::string base(c[3].val.c_str()); 
-    HDC         hdc = str_hdc(c[0].val);
+    HDC         hdc = para_str_hdc(c[0].val);
     long left, top;
     if (c[2].type != List) {
         left = atol(c[1].val.c_str());
@@ -158,33 +169,17 @@ cell proc_textout(const cells& c)
 }
 cell proc_lv_create(const cells& c)
 {
-    HWND hwnd = str_hwnd(c[0].val);
-    long left, top, right, bottom;
+    HWND hwnd = para_str_hwnd(c[0].val);    
     long base = 1;
-    if (c[base].type != List) {
-        left = atol(c[base].val.c_str());
-        top = (atol(c[base+1].val.c_str()));
-        right = (atol(c[base + 2].val.c_str()));
-        bottom = (atol(c[base + 3].val.c_str()));
-    }
-    else {
-        left = atol(c[base].list[0].val.c_str());
-        top = atol(c[base].list[1].val.c_str());
-        right = atol(c[base].list[2].val.c_str());
-        bottom = atol(c[base].list[3].val.c_str());
-    }
     RECT        rect = { 0 };
-    rect.left = left;//10;
-    rect.top = top;//10;
-    rect.right = right;//200;
-    rect.bottom = bottom;//100;
+    para_getrect(c, 1, rect);
     HWND hList = CreateListView(hwnd, 101, rect);    
-    cell result(String, hwnd_str(hList));
+    cell result(String, para_hwnd_str(hList));
     return result;
 }
 cell proc_lv_setcolumns(const cells& c)
 {
-    HWND hList = str_hwnd(c[0].val);    
+    HWND hList = para_str_hwnd(c[0].val);    
     LVCOLUMN  LvCol;
     memset(&LvCol, 0, sizeof(LvCol));
     LvCol.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
@@ -199,12 +194,12 @@ cell proc_lv_setcolumns(const cells& c)
 int kk = 0;
 cell proc_lv_appenditem(const cells& c)
 {
-    HWND hList = str_hwnd(c[0].val);
+    HWND hList = para_str_hwnd(c[0].val);
     LVITEM LvItem;    
     memset(&LvItem, 0, sizeof(LvItem)); // Zero struct's Members    
     LvItem.mask = LVIF_TEXT;   // Text Style
     LvItem.cchTextMax = 256; // Max size of test
-    int index = SendMessage(hList, LVM_GETITEMCOUNT, 0, 0);//atoi(c[1].val.c_str());          // choose item  
+    int index = (int)SendMessage(hList, LVM_GETITEMCOUNT, 0, 0);//atoi(c[1].val.c_str());          // choose item  
     LvItem.iItem = index;
     LvItem.iSubItem = 0;       // Put in first coluom
     int base = 2;
@@ -221,7 +216,7 @@ cell proc_lv_appenditem(const cells& c)
 }
 cell proc_setwindowtext(const cells& c)
 {
-    HWND hwnd = str_hwnd(c[0].val);
+    HWND hwnd = para_str_hwnd(c[0].val);
     std::string str;
     if (c[1].type == List)
         str = to_string1(c[1].list);
@@ -232,7 +227,7 @@ cell proc_setwindowtext(const cells& c)
 }
 cell proc_trap(const cells& c)
 {
-    HWND hwnd = str_hwnd(c[0].val);
+    HWND hwnd = para_str_hwnd(c[0].val);
     std::string str= c[1].val;
     str = eval(c[1], &global_env).val;
     SetWindowText(hwnd, str.c_str());
@@ -251,7 +246,7 @@ cell proc_setmapmode(const cells& c)
     //long n2(atol(c[0].list[0].val.c_str()));//ps
     //HWND hwnd = str_hwnd(c[0].list[1].val);
     //HDC         hdc = str_hdc(c[0].list[2].val);
-    HDC         hdc = str_hdc(c[0].val);
+    HDC         hdc = para_str_hdc(c[0].val);
     long mode = atol(c[1].val.c_str());
     SetMapMode(hdc,mode);
     return true_sym;
@@ -261,7 +256,7 @@ cell proc_setwindowextent(const cells& c)
     //long n2(atol(c[0].list[0].val.c_str()));//ps
     //HWND hwnd = str_hwnd(c[0].list[1].val);
     //HDC         hdc = str_hdc(c[0].list[2].val);
-    HDC         hdc = str_hdc(c[0].val);
+    HDC         hdc = para_str_hdc(c[0].val);
     long x = atol(c[1].val.c_str());
     long y = atol(c[2].val.c_str());
     SetWindowExtEx(hdc, x, y, NULL);
@@ -272,7 +267,7 @@ cell proc_setviewextent(const cells& c)
     //long n2(atol(c[0].list[0].val.c_str()));//ps
     //HWND hwnd = str_hwnd(c[0].list[1].val);
     //HDC         hdc = str_hdc(c[0].list[2].val);
-    HDC         hdc = str_hdc(c[0].val);
+    HDC         hdc = para_str_hdc(c[0].val);
     long x = atol(c[1].val.c_str());
     long y = atol(c[2].val.c_str());
     SetViewportExtEx(hdc, x, y, NULL);
@@ -285,7 +280,7 @@ cell proc_line(const cells& c)
     //HDC         hdc = hdcs[n1]; //hdc
 /*    HWND hwnd = str_hwnd(c[0].list[1].val);
     HDC         hdc = str_hdc(c[0].list[2].val); */  
-    HDC         hdc = str_hdc(c[0].val);
+    HDC         hdc = para_str_hdc(c[0].val);
     long left(atol(c[1].val.c_str()));
     long top(atol(c[2].val.c_str()));
     long right(atol(c[3].val.c_str()));
@@ -320,7 +315,7 @@ cell proc_lr2dr(const cells& c) {
     //HWND hwnd = hw;
     //HWND hwnd = hwnds[n0];
     //GetClientRect(hwnd, &rect);
-    HDC         hdc = str_hdc(c[0].val);
+    HDC         hdc = para_str_hdc(c[0].val);
     long mapmode = atol(c[1].val.c_str()); 
     long left = atol(c[2].list[0].val.c_str());
     long top = atol(c[2].list[1].val.c_str());
@@ -342,7 +337,7 @@ cell proc_lr2dr(const cells& c) {
 }
 PAINTSTRUCT ps;
 cell proc_beginpaint(const cells& c) {
-    HWND hwnd = str_hwnd(c[0].val);
+    HWND hwnd = para_str_hwnd(c[0].val);
     HDC         hdc;
   
     hdc = BeginPaint(hwnd, &ps);
@@ -352,14 +347,14 @@ cell proc_beginpaint(const cells& c) {
     PAINTSTRUCT* qq = &ps;
     PAINTSTRUCT* pp = (PAINTSTRUCT*)((void*)a);    
     std::ostringstream stream;
-    stream << "(list 0 "  << " " << hwnd_str(hwnd) << " " << hdc_str(hdc) << " " << ps_str(&ps) << ")";
+    stream << "(list 0 "  << " " << para_hwnd_str(hwnd) << " " << para_hdc_str(hdc) << " " << para_ps_str(&ps) << ")";
     return run(stream.str(), &global_env);
 }
 cell proc_endpaint(const cells& c) {
 
     long n2(atol(c[0].list[0].val.c_str()));//ps
-    HWND hwnd = str_hwnd(c[0].list[1].val);        
-    PAINTSTRUCT* ps1 = str_ps(c[0].list[3].val);
+    HWND hwnd = para_str_hwnd(c[0].list[1].val);        
+    PAINTSTRUCT* ps1 = para_str_ps(c[0].list[3].val);
 
     
 
@@ -392,12 +387,8 @@ bool haserror=false;
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
-    //char buff[100];
     cell a;
-    std::string str;
-    HWND hList;
-    RECT rcClient;
-    //if (message == WM_PAINT || WM_CREATE == message)return 0;
+    std::string str;    
     if(!haserror)
     try {
         
@@ -405,7 +396,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         
 #pragma warning(pop)
         str = "(winproc  ";
-        str += hwnd_str(hwnd);
+        str += para_hwnd_str(hwnd);
         str += " ";
         str += std::to_string(message);        
         str += ")";
@@ -526,7 +517,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("listview.lsp");
+        std::ifstream t("sysmet1.lsp");
         std::stringstream buffer;
         buffer << t.rdbuf();
         run(buffer.str(), &global_env);
@@ -555,6 +546,3 @@ cell proc_load(const cells& c) {
     run(buffer.str(), &global_env);
     return true_sym;
 }
-
-
-
