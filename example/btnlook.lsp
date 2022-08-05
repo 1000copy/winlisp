@@ -31,9 +31,9 @@
     (define oncommand(lambda(hwnd msg wp lp)(begin
         (if (= (hiword wp) BN_CLICKED)(begin
             (#      here's comment
-                    button id (loword wp)
-                    button hwnd (HWND)lParam
-                    HIWORD(wParam) == BN_CLICKED
+                    button id [loword wp]
+                    button hwnd [HWND]lParam
+                    HIWORD[wParam] == BN_CLICKED
             )
             (setwindowtext lp (loword wp))
             (setwindowtext hwnd (loword wp))
