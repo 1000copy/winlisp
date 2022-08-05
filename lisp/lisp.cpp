@@ -196,6 +196,8 @@ cell eval(cell x, environment* env)
         return nil;
     if (x.list[0].type == Symbol) {
         //log("eval list:"); log(x.list[0].val);
+        if (x.list[0].val == "comment" || x.list[0].val == "#")       // (quote exp)
+            return true_sym;
         if (x.list[0].val == "quote")       // (quote exp)
             return x.list[1];
         if (x.list[0].val == "if")          // (if test conseq [alt])

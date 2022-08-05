@@ -1,5 +1,6 @@
 (begin    
     (quote Button Notifier)
+    (# Button Notifier)
     (def 
             BN_CLICKED          0
             BN_PAINT            1
@@ -39,6 +40,7 @@
         MM_HIENGLISH        5
         MM_TWIPS            6
         MM_ISOTROPIC        7)
+    (# System Metrics)
     (def 
         SM_CXSCREEN             0   
         SM_CYSCREEN             1
