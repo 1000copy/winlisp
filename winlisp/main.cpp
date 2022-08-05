@@ -237,10 +237,11 @@ cell proc_createbutton(const cells& c)
     HWND hwnd = para_str_hwnd(c[0].val);
     DWORD iStyle = atol(c[1].val.c_str());
     RECT rect = {0};
-    para_getrect(c, 3, rect);
+    para_getrect(c, 4, rect);
     HMENU id = (HMENU)atol(c[2].val.c_str());
+    std::string title = c[3].val;
     HWND hwndButton = CreateWindow(TEXT("button"),
-        "abc",
+        title.c_str(),
         WS_CHILD | WS_VISIBLE | iStyle,
         rect.left,rect.top,rect.right,rect.bottom,
         hwnd, (HMENU)id,

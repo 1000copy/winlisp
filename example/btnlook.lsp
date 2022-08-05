@@ -14,13 +14,15 @@
     ))
     (define oncreate (lambda (hwnd )        
         (begin
-            (def i 0 style 0 id 0)
+            (def i 0 style 0 id 0 title 0)
             (setwindowtext hwnd 'btnlook')
-            (def rect (getclientrect hwnd))
+            (def rect 0)
             (repeat (length texts) (begin 
                 (set! style (eval (nth (nth texts i) 0)))
                 (set! id (eval (nth (nth texts i) 1)))
-                (createbutton hwnd style id 0 (* 25 i) 100 20)                
+                (set! title (eval (nth (nth texts i) 2)))
+                (set! rect(list 0 (* 35 i) 150 30))
+                (createbutton hwnd style id title rect)
                 (set! i(+ i 1))
             ))
             #t
@@ -28,6 +30,11 @@
     ))
     (define oncommand(lambda(hwnd msg wp lp)(begin
         (if (= (hiword wp) BN_CLICKED)(begin
+            (#      here's comment
+                    button id (loword wp)
+                    button hwnd (HWND)lParam
+                    HIWORD(wParam) == BN_CLICKED
+            )
             (setwindowtext lp (loword wp))
             (setwindowtext hwnd (loword wp))
     )))))
@@ -41,7 +48,3 @@
     (register (app) 'HelloWin1' )
     (create (app) 'HelloWin1')
 )
-
-button id (loword wp)
-button hwnd (HWND)lParam
-HIWORD(wParam) == BN_CLICKED
