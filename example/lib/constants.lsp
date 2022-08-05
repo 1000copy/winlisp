@@ -1,4 +1,5 @@
 (begin    
+    (quote Button Notifier)
     (def 
             BN_CLICKED          0
             BN_PAINT            1
