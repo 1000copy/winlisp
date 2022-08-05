@@ -95,7 +95,7 @@ triple gettextmetrics(HWND hwnd) {
     return t;
 }
 cell proc_GetKeyNameText(const cells& c) {
-    LPARAM l = atol(c[0].val.c_str());    
+    LONG l = atol(c[0].val.c_str());    
     TCHAR        szKeyName[32];
     GetKeyNameText(l, szKeyName,sizeof(szKeyName) / sizeof(TCHAR));
     cell result(String,szKeyName);
@@ -221,6 +221,33 @@ cell proc_lv_appenditem(const cells& c)
     }    
     return true_sym;
 }
+
+cell proc_loword(const cells& c) {
+    WPARAM wp = atol(c[0].val.c_str());
+    cell r(Number, std::to_string(LOWORD(wp)));
+    return r;
+}
+cell proc_hiword(const cells& c) {
+    WPARAM wp = atol(c[0].val.c_str());
+    cell r(Number, std::to_string(HIWORD(wp)));
+    return r;
+}
+cell proc_createbutton(const cells& c)
+{    
+    HWND hwnd = para_str_hwnd(c[0].val);
+    DWORD iStyle = atol(c[1].val.c_str());
+    RECT rect = {0};
+    para_getrect(c, 3, rect);
+    HMENU id = (HMENU)atol(c[2].val.c_str());
+    HWND hwndButton = CreateWindow(TEXT("button"),
+        "abc",
+        WS_CHILD | WS_VISIBLE | iStyle,
+        rect.left,rect.top,rect.right,rect.bottom,
+        hwnd, (HMENU)id,
+        0, NULL);
+    return true_sym;
+}
+
 cell proc_setwindowtext(const cells& c)
 {
     HWND hwnd = para_str_hwnd(c[0].val);
@@ -514,6 +541,9 @@ void add_winglobals() {
     global_env["lv_setcolumns"] = cell(&proc_lv_setcolumns);
     global_env["lv_appenditem"] = cell(&proc_lv_appenditem);
     global_env["GetKeyNameText"] = cell(&proc_GetKeyNameText);
+    global_env["createbutton"] = cell(&proc_createbutton);
+    global_env["loword"] = cell(&proc_loword);
+    global_env["hiword"] = cell(&proc_hiword);
     
 }
 #include "listview.h"
@@ -529,7 +559,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("keyview.lsp");
+        std::ifstream t("btnlook.lsp");
+        //std::ifstream t("keyview.lsp");
         //std::ifstream t("helloworld.lsp");
         /*std::ifstream t("drawrect.lsp");*/
         /*std::ifstream t("gettextmetrics.lsp");*/
