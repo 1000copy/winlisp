@@ -1,5 +1,5 @@
 (begin
-    (def    WM_CHAR 258)
+    (def    WM_CHAR 258 WM_CHAR 0x0102)
     (define 
         WM_CREATE   1
         WM_PAINT    15

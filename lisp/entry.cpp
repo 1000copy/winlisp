@@ -50,7 +50,8 @@ int main()
     // repl("90> ", &global_env);
     // test(global_env);
     try {
-        TEST("((lambda (x) (+ x x)) )", "10");
+        TEST("(def WM_CHAR1 0x0102)", "258"); 
+        TEST("((lambda (x) (+ x x)) 5)", "10");
         TEST("(quote (testing 1 (2.0) -3.14e159))", "(testing 1 (2.0) -3.14e159)");
         TEST("(+ 2 2)", "4");
         TEST("(+ (* 2 100) (* 1 10))", "210");
@@ -65,9 +66,9 @@ int main()
         TEST("(twice 5)", "10");
         TEST("(define compose (lambda (f g) (lambda (x) (f (g x)))))", "<Lambda>");
         TEST("((compose list twice) 5)", "(10)");
-        TEST("(define repeat (lambda (f) (compose f f)))", "<Lambda>");
-        TEST("((repeat twice) 5)", "20");
-        TEST("((repeat (repeat twice)) 5)", "80");
+        TEST("(define repeat1 (lambda (f) (compose f f)))", "<Lambda>");
+        TEST("((repeat1 twice) 5)", "20");
+        TEST("((repeat1 (repeat1 twice)) 5)", "80");
         TEST("(define fact (lambda (n) (if (<= n 1) 1 (* n (fact (- n 1))))))", "<Lambda>");
         TEST("(fact 3)", "6");
         //TEST("(fact 50)", "30414093201713378043612608166064768844377641568960512000000000000");
@@ -87,7 +88,7 @@ int main()
             "(define mid (lambda (seq) (/ (length seq) 2)))"
             "((combine append) (take (mid deck) deck) (drop (mid deck) deck)))))", "<Lambda>");
         TEST("(riff-shuffle (list 1 2 3 4 5 6 7 8))", "(1 5 2 6 3 7 4 8)");
-        TEST("((repeat riff-shuffle) (list 1 2 3 4 5 6 7 8))", "(1 3 5 7 2 4 6 8)");
+        TEST("((repeat1 riff-shuffle) (list 1 2 3 4 5 6 7 8))", "(1 3 5 7 2 4 6 8)");
         TEST("(riff-shuffle (riff-shuffle (riff-shuffle (list 1 2 3 4 5 6 7 8))))", "(1 2 3 4 5 6 7 8)");
         std::cout
             << "total tests " << g_test_count
@@ -96,6 +97,7 @@ int main()
     }
     catch (std::string msg) {
         std::cout << msg;
+        std::cin;
     }
     return g_fault_count ? EXIT_FAILURE : EXIT_SUCCESS;
 }

@@ -166,12 +166,30 @@ cell run(std::string str, environment* env) {
         return eval(read(str), env);
     
 }
+unsigned int to_base10(const char* d_str, int len, int base)
+{
+    if (len < 1) {
+        return 0;
+    }
+    char d = d_str[0];
+    // chars 0-9 = 48-57, chars a-f = 97-102
+    int val = (d > 57) ? d - ('a' - 10) : d - '0';
+    int result = (int)(val * pow(base, (len - 1)));
+    d_str++; // increment pointer
+    return result + to_base10(d_str, len - 1, base);
+}
 cell eval(cell x, environment* env)
 {
     if (x.type == Symbol)
         return env->find(x.val)[x.val];
-    if (x.type == Number)
+    if (x.type == Number) {
+        if (x.val.size() > 2 && x.val[0] == '0' && x.val[1] == 'x') {
+            std::string str1 = x.val.substr(2);
+            unsigned int a = to_base10(str1.c_str(), str1.size(), 16);            
+            x.val = std::to_string(a);
+        }
         return x;
+    }
     if (x.type == String)
         return x;
     if (x.list.empty())
