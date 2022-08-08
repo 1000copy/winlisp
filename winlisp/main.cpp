@@ -273,10 +273,16 @@ cell proc_ls_getsel(const cells& c)
     cell r(String, str);
     return r;
 }
-
-void FillListBox(HWND hwndList)
-
+cell proc_ls_add(const cells& c)
 {
+    HWND hwndList = para_str_hwnd(c[0].val);
+    TCHAR* pVarName = (TCHAR*)c[1].val.c_str();
+    SendMessage(hwndList, LB_ADDSTRING, 0, (LPARAM)pVarName);
+    return true_sym;
+}
+cell proc_GetEnvironmentStrings(const cells& c)
+{
+    cell r(List);
     int     iLength;
     TCHAR* pVarBlock, * pVarBeg, * pVarEnd, * pVarName, * pVarBlockHead;
 
@@ -299,14 +305,18 @@ void FillListBox(HWND hwndList)
             pVarName[iLength] = '\0';
 
             // Put the variable name in the list box and free memory.
-
-            SendMessage(hwndList, LB_ADDSTRING, 0, (LPARAM)pVarName);
+            std::string str(pVarName);
+            cell r1(String, str);
+            r.list.push_back(r1);
             free(pVarName);
         }
         while (*pVarBlock++ != '\0');     // Scan until terminating zero
     }
     FreeEnvironmentStrings(pVarBlockHead);
+    
+    return r;
 }
+
 cell proc_createlistbox(const cells& c)
 {
     HWND hwnd = para_str_hwnd(c[0].val);
@@ -321,7 +331,7 @@ cell proc_createlistbox(const cells& c)
         rect.left, rect.top, rect.right, rect.bottom,
         hwnd, (HMENU)id,
         0, NULL);
-    FillListBox(hList);
+    //FillListBox(hList);
     cell r(String, para_hwnd_str(hList));
     return r;
 }
@@ -643,6 +653,8 @@ void add_winglobals() {
     global_env["createlistbox"] = cell(&proc_createlistbox);
     global_env["createstatic"] = cell(&proc_createstatic);    
     global_env["ls_getsel"] = cell(&proc_ls_getsel);
+    global_env["GetEnvironmentStrings"] = cell(&proc_GetEnvironmentStrings);
+    global_env["ls_add"] = cell(&proc_ls_add);
     
 }
 #include "listview.h"
