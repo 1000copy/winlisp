@@ -737,8 +737,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("BlokOut.lsp");
-        /*std::ifstream t("environ.lsp");*/
+        std::ifstream t("blokout.lsp");
+        //std::ifstream t("environ.lsp");
         /*std::ifstream t("btnlook.lsp");*/
         //std::ifstream t("keyview.lsp");
         //std::ifstream t("helloworld.lsp");

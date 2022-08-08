@@ -246,6 +246,7 @@ cell eval(cell x, environment* env)
             return x;
         }
         if (x.list[0].val == "begin") {     // (begin exp*)
+            if (x.list.size() == 1)return true_sym;
             for (size_t i = 1; i < x.list.size() - 1; ++i)
                 eval(x.list[i], env);
             return eval(x.list[x.list.size() - 1], env);
