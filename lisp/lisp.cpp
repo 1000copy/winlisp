@@ -53,6 +53,14 @@ cell proc_equal(const cells& c)
         return false_sym;
     //return cell(Number, str(n));
 }
+cell proc_and(const cells& c)
+{
+    bool b = true;    
+    for (cellit i = c.begin(); i != c.end(); ++i) {
+        if ( i->type == Symbol &&  i->val == "#f" )return false_sym;
+    }
+    return true_sym;    
+}
 
 cell proc_sub(const cells& c)
 {
@@ -159,6 +167,7 @@ void add_globals(environment& env)
     env["cat"] = cell(&proc_cat);
     env["p"] = cell(&proc_p);     
     env["nth"] = cell(&proc_nth);
+    env["and"] = cell(&proc_and);    
 }
 
 ////////////////////// eval

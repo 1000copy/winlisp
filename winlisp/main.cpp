@@ -5,7 +5,26 @@
 #include "..\lisp\lisp.h"
 #include "metric.h"
 #include "listview.h"
+void Rectangle1(HDC hdc, int l, int t, int r, int b) {
+    MoveToEx(hdc, l, t, NULL);
+    LineTo(hdc, l, b);
+    LineTo(hdc, r, b);
+    LineTo(hdc, r, t);
+    LineTo(hdc, l, t);
+}
 
+void DrawBoxOutline(HWND hwnd, POINT ptBeg, POINT ptEnd)
+{
+    HDC hdc;
+
+    hdc = GetDC(hwnd);
+
+    SetROP2(hdc, R2_NOT);
+    //SelectObject (hdc, GetStockObject (NULL_BRUSH)) ;
+    Rectangle1(hdc, ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y);
+
+    ReleaseDC(hwnd, hdc);
+}
 void para_getrect(const cells& c, int base, RECT& rect) {
     long left, top, right, bottom;
     if (c[base].type != List) {
@@ -545,7 +564,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         str += ")";
         a = run(str, &global_env);
         HWND hw = (HWND)((DWORD64)hwnd);
-        if (message == WM_PAINT || message == WM_DESTROY) {
+        /*if (message == WM_PAINT || message == WM_DESTROY) {*/
+        if ( message == WM_DESTROY) {
             return 0;
         }
     }
@@ -562,6 +582,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     }   
     
     static HWND hwndEdit = 0; std::stringstream str1;
+    static BOOL  fBlocking, fValidBox;
+    static POINT ptBeg, ptEnd, ptBoxBeg, ptBoxEnd;
+    HDC          hdc;
+    PAINTSTRUCT  ps;
     switch (message)
     {
     case WM_CREATE:
@@ -596,7 +620,79 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     //    GetClientRect(hwnd, &rect);
     //    ScrollWindowEx(hwnd, 0, -20, &rect, &rect,NULL,NULL,0);
     //    break;
-  
+        case WM_LBUTTONDOWN:
+            ptBeg.x = ptEnd.x = LOWORD(lParam);
+            ptBeg.y = ptEnd.y = HIWORD(lParam);
+
+            DrawBoxOutline(hwnd, ptBeg, ptEnd);
+
+            SetCursor(LoadCursor(NULL, IDC_CROSS));
+
+            fBlocking = TRUE;
+            return 0;
+
+        case WM_MOUSEMOVE:
+            if (fBlocking)
+            {
+                SetCursor(LoadCursor(NULL, IDC_CROSS));
+
+                DrawBoxOutline(hwnd, ptBeg, ptEnd);
+
+                ptEnd.x = LOWORD(lParam);
+                ptEnd.y = HIWORD(lParam);
+
+                DrawBoxOutline(hwnd, ptBeg, ptEnd);
+            }
+            return 0;
+
+        case WM_LBUTTONUP:
+            if (fBlocking)
+            {
+                DrawBoxOutline(hwnd, ptBeg, ptEnd);
+
+                ptBoxBeg = ptBeg;
+                ptBoxEnd.x = LOWORD(lParam);
+                ptBoxEnd.y = HIWORD(lParam);
+
+                SetCursor(LoadCursor(NULL, IDC_ARROW));
+
+                fBlocking = FALSE;
+                fValidBox = TRUE;
+
+                InvalidateRect(hwnd, NULL, TRUE);
+            }
+            return 0;
+
+        case WM_CHAR:
+            if (fBlocking & (wParam == '\x1B'))     // i.e., Escape
+            {
+                DrawBoxOutline(hwnd, ptBeg, ptEnd);
+
+                SetCursor(LoadCursor(NULL, IDC_ARROW));
+
+                fBlocking = FALSE;
+            }
+            return 0;
+
+        case WM_PAINT:
+            hdc = BeginPaint(hwnd, &ps);
+
+            if (fValidBox)
+            {
+                //SelectObject (hdc, GetStockObject (BLACK_BRUSH)) ;
+                Rectangle1(hdc, ptBoxBeg.x, ptBoxBeg.y,
+                    ptBoxEnd.x, ptBoxEnd.y);
+            }
+
+            if (fBlocking)
+            {
+                SetROP2(hdc, R2_NOT);
+                //SelectObject (hdc, GetStockObject (NULL_BRUSH)) ;
+                Rectangle1(hdc, ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y);
+            }
+
+            EndPaint(hwnd, &ps);
+            return 0;
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -670,7 +766,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("environ.lsp");
+        std::ifstream t("BlokOut.lsp");
+        /*std::ifstream t("environ.lsp");*/
         /*std::ifstream t("btnlook.lsp");*/
         //std::ifstream t("keyview.lsp");
         //std::ifstream t("helloworld.lsp");
