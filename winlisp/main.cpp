@@ -588,38 +588,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     PAINTSTRUCT  ps;
     switch (message)
     {
-    case WM_CREATE:
-        
-        return 0;
-
-    //case WM_CREATE:
-    //    hwndEdit = CreateWindow(TEXT("edit"), NULL,
-    //        WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL |
-    //        WS_BORDER | ES_LEFT | ES_MULTILINE |
-    //        ES_AUTOHSCROLL | ES_AUTOVSCROLL,
-    //        0, 0, 0, 0, hwnd, (HMENU)1,
-    //        ((LPCREATESTRUCT)lParam)->hInstance, NULL);
-    //    //SetWindowText(hwndEdit, _TEXT("hello\r\nworld!\n3"));
-    //    SetWindowText(hwndEdit, "hello   1   234\r\nworld    5 678");
-    //    for (int i = 0; i < NUMLINES; i++)
-    //    {
-    //        str1 << sysmetrics[i].szLabel << "\t\t\t\t"<< sysmetrics[i].szDesc << "\t\t\t\t" << std::to_string(GetSystemMetrics(sysmetrics[i].iIndex)) << "\r\n";
-    //    }
-    //    SetWindowText(hwndEdit, str1.str().c_str());
-    //    return 0;
-
-    //case WM_SETFOCUS:
-    //    SetFocus(hwndEdit);
-    //    return 0;
-
-    //case WM_SIZE:
-    //    MoveWindow(hwndEdit, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);
-    //    return 0;
-    //case WM_CHAR:
-    //    RECT        rect;
-    //    GetClientRect(hwnd, &rect);
-    //    ScrollWindowEx(hwnd, 0, -20, &rect, &rect,NULL,NULL,0);
-    //    break;
+        case WM_CREATE:        
+            return 0;
         case WM_LBUTTONDOWN:
             ptBeg.x = ptEnd.x = LOWORD(lParam);
             ptBeg.y = ptEnd.y = HIWORD(lParam);
