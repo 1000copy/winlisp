@@ -1,5 +1,14 @@
 (begin    
-    (quote Button Notifier)
+    (def 
+        LBN_ERRSPACE        -2
+        LBN_SELCHANGE       1
+        LBN_DBLCLK          2
+        LBN_SELCANCEL       3
+        LBN_SETFOCUS        4
+        LBN_KILLFOCUS       5
+    )
+    (quote Button Notifier)    
+
     (# Button Notifier)
     (def 
             BN_CLICKED          0

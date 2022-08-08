@@ -232,6 +232,7 @@ cell proc_hiword(const cells& c) {
     cell r(Number, std::to_string(HIWORD(wp)));
     return r;
 }
+
 cell proc_createbutton(const cells& c)
 {    
     HWND hwnd = para_str_hwnd(c[0].val);
@@ -246,9 +247,102 @@ cell proc_createbutton(const cells& c)
         rect.left,rect.top,rect.right,rect.bottom,
         hwnd, (HMENU)id,
         0, NULL);
-    return true_sym;
+    cell r(String, para_hwnd_str(hwndButton));
+    return r;
+}
+cell proc_ls_getsel(const cells& c)
+{
+    int          iIndex, iLength, cxChar, cyChar;
+    TCHAR* pVarName, * pVarValue;
+
+    HWND hwndList = para_str_hwnd(c[0].val);
+    iIndex = SendMessage(hwndList, LB_GETCURSEL, 0, 0);
+    iLength = SendMessage(hwndList, LB_GETTEXTLEN, iIndex, 0) + 1;
+    pVarName = (TCHAR*)calloc(iLength, sizeof(TCHAR));
+    SendMessage(hwndList, LB_GETTEXT, iIndex, (LPARAM)pVarName);
+
+    // Get environment string.
+
+    iLength = GetEnvironmentVariable(pVarName, NULL, 0);
+    pVarValue =(TCHAR*) calloc(iLength, sizeof(TCHAR));
+    GetEnvironmentVariable(pVarName, pVarValue, iLength);
+
+    std::string str(pVarValue);
+    free(pVarName);
+    free(pVarValue);
+    cell r(String, str);
+    return r;
 }
 
+void FillListBox(HWND hwndList)
+
+{
+    int     iLength;
+    TCHAR* pVarBlock, * pVarBeg, * pVarEnd, * pVarName, * pVarBlockHead;
+
+    pVarBlockHead = pVarBlock = GetEnvironmentStrings();  // Get pointer to environment block
+
+    while (*pVarBlock)
+    {
+        if (*pVarBlock != '=')   // Skip variable names beginning with '='
+        {
+            pVarBeg = pVarBlock;              // Beginning of variable name
+            while (*pVarBlock++ != '=');      // Scan until '='
+            pVarEnd = pVarBlock - 1;          // Points to '=' sign
+            iLength = pVarEnd - pVarBeg;      // Length of variable name
+
+                 // Allocate memory for the variable name and terminating
+                 // zero. Copy the variable name and append a zero.
+
+            pVarName = (TCHAR*)calloc(iLength + 1, sizeof(TCHAR));
+            CopyMemory(pVarName, pVarBeg, iLength * sizeof(TCHAR));
+            pVarName[iLength] = '\0';
+
+            // Put the variable name in the list box and free memory.
+
+            SendMessage(hwndList, LB_ADDSTRING, 0, (LPARAM)pVarName);
+            free(pVarName);
+        }
+        while (*pVarBlock++ != '\0');     // Scan until terminating zero
+    }
+    FreeEnvironmentStrings(pVarBlockHead);
+}
+cell proc_createlistbox(const cells& c)
+{
+    HWND hwnd = para_str_hwnd(c[0].val);
+    DWORD iStyle = atol(c[1].val.c_str());
+    RECT rect = { 0 };
+    para_getrect(c, 4, rect);
+    HMENU id = (HMENU)atol(c[2].val.c_str());
+    std::string title = c[3].val;
+    HWND hList = CreateWindow(TEXT("listbox"),
+        NULL,
+        WS_CHILD | WS_VISIBLE | LBS_STANDARD,
+        rect.left, rect.top, rect.right, rect.bottom,
+        hwnd, (HMENU)id,
+        0, NULL);
+    FillListBox(hList);
+    cell r(String, para_hwnd_str(hList));
+    return r;
+}
+
+cell proc_createstatic(const cells& c)
+{
+    HWND hwnd = para_str_hwnd(c[0].val);
+    DWORD iStyle = atol(c[1].val.c_str());
+    RECT rect = { 0 };
+    para_getrect(c, 4, rect);
+    HMENU id = (HMENU)atol(c[2].val.c_str());
+    std::string title = c[3].val;
+    HWND hwndButton = CreateWindow(TEXT("static"),
+        NULL,
+        WS_CHILD | WS_VISIBLE | SS_LEFT,
+        rect.left, rect.top, rect.right, rect.bottom,
+        hwnd, (HMENU)id,
+        0, NULL);
+    cell r(String, para_hwnd_str(hwndButton));
+    return r;
+}
 cell proc_setwindowtext(const cells& c)
 {
     HWND hwnd = para_str_hwnd(c[0].val);
@@ -492,6 +586,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     //    GetClientRect(hwnd, &rect);
     //    ScrollWindowEx(hwnd, 0, -20, &rect, &rect,NULL,NULL,0);
     //    break;
+  
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -545,6 +640,9 @@ void add_winglobals() {
     global_env["createbutton"] = cell(&proc_createbutton);
     global_env["loword"] = cell(&proc_loword);
     global_env["hiword"] = cell(&proc_hiword);
+    global_env["createlistbox"] = cell(&proc_createlistbox);
+    global_env["createstatic"] = cell(&proc_createstatic);    
+    global_env["ls_getsel"] = cell(&proc_ls_getsel);
     
 }
 #include "listview.h"
@@ -560,7 +658,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("btnlook.lsp");
+        std::ifstream t("environ.lsp");
+        /*std::ifstream t("btnlook.lsp");*/
         //std::ifstream t("keyview.lsp");
         //std::ifstream t("helloworld.lsp");
         /*std::ifstream t("drawrect.lsp");*/
