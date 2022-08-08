@@ -18,7 +18,8 @@ void DrawBoxOutline(HWND hwnd, POINT ptBeg, POINT ptEnd)
     HDC hdc;
 
     hdc = GetDC(hwnd);
-
+    // int oldROP = GetROP2;
+    // SetROP2(oldROP);
     SetROP2(hdc, R2_NOT);
     //SelectObject (hdc, GetStockObject (NULL_BRUSH)) ;
     Rectangle1(hdc, ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y);
