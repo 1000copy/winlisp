@@ -556,48 +556,6 @@ ATOM registerclass(HINSTANCE hInstance, std::string app) {
 
 void onpaint(HWND hwnd);
 bool haserror=false;
-// group begin
-//static BOOL  fBlocking, fValidBox;
-//static POINT ptBeg, ptEnd;
-//void proc_down(HWND hwnd,LPARAM lParam) {
-//    ptBeg.x = ptEnd.x = LOWORD(lParam);
-//    ptBeg.y = ptEnd.y = HIWORD(lParam);
-//
-//    rect_xor(hwnd, ptBeg, ptEnd);
-//
-//    SetCursor(LoadCursor(NULL, IDC_CROSS));
-//
-//    fBlocking = TRUE;
-//}
-//void proc_move(HWND hwnd, LPARAM lParam) {
-//    if (fBlocking)
-//    {
-//        SetCursor(LoadCursor(NULL, IDC_CROSS));
-//
-//        rect_xor(hwnd, ptBeg, ptEnd);
-//
-//        ptEnd.x = LOWORD(lParam);
-//        ptEnd.y = HIWORD(lParam);
-//
-//        rect_xor(hwnd, ptBeg, ptEnd);
-//    }
-//}
-//void proc_up(HWND hwnd, LPARAM lParam) {
-//    if (fBlocking)
-//    {
-//        rect_xor(hwnd, ptBeg, ptEnd);
-//
-//        ptEnd.x = LOWORD(lParam);
-//        ptEnd.y = HIWORD(lParam);
-//
-//        SetCursor(LoadCursor(NULL, IDC_ARROW));
-//
-//        fBlocking = FALSE;
-//        fValidBox = TRUE;
-//
-//        InvalidateRect(hwnd, NULL, TRUE);
-//    }
-//}
 cell proc_invalidaterect(const cells& c){
     HWND hwnd = para_str_hwnd(c[0].val);
     InvalidateRect(hwnd, NULL, TRUE);
@@ -611,11 +569,6 @@ cell proc_rect_xor(const cells& c) {
     return true_sym;
 }
 
-
-//void proc_paint(HDC hdc) {    
-//    if(fValidBox )
-//        Rectangle1(hdc, ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y);
-//}
 cell proc_rect1(const cells& c)
 {
     HDC hdc = para_str_hdc(c[0].val);
@@ -624,50 +577,6 @@ cell proc_rect1(const cells& c)
     Rectangle1(hdc, p1.x, p1.y, p2.x, p2.y);
     return true_sym;
 }
-//cell proc_up_wrap(const cells& c)
-//{
-//    HWND hwnd = para_str_hwnd(c[0].val);
-//    long lp = (atol(c[1].val.c_str()));
-//    proc_up(hwnd, (LPARAM)lp);
-//    return true_sym;
-//}
-//cell proc_move_wrap(const cells& c)
-//{
-//    HWND hwnd = para_str_hwnd(c[0].val);
-//    long lp = (atol(c[1].val.c_str()));
-//    proc_move(hwnd, (LPARAM)lp);
-//    return true_sym;
-//}
-//cell proc_down_wrap(const cells& c)
-//{
-//    HWND hwnd = para_str_hwnd(c[0].val);
-//    long lp = (atol(c[1].val.c_str()));
-//    proc_down(hwnd, (LPARAM)lp);
-//    return true_sym;
-//}
-//cell proc_paint_wrap(const cells& c)
-//{
-//    HDC hdc = para_str_hdc(c[0].val);    
-//    proc_paint(hdc);
-//    return true_sym;
-//}
-//void proc_char1(HWND hwnd,WPARAM wParam) {
-//    if (fBlocking & (wParam == '\x1B'))     // i.e., Escape
-//    {
-//        rect_xor(hwnd, ptBeg, ptEnd);
-//        SetCursor(LoadCursor(NULL, IDC_ARROW));
-//        fBlocking = FALSE;
-//    }
-//}
-//cell proc_char1_wrap(const cells& c)
-//{
-//    HWND hwnd = para_str_hwnd(c[0].val);
-//    long wp = (atol(c[1].val.c_str()));     
-//    proc_char1(hwnd, (WPARAM)wp);
-//    return true_sym;
-//}
-
-// group end
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
