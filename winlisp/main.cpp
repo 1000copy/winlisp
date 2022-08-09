@@ -103,7 +103,6 @@ cell proc_app(const cells& c);
 cell proc_register(const cells& c);
 cell proc_create1(const cells& c);
 std::vector<HINSTANCE> apps;
-//std::vector<PAINTSTRUCT> pss;
 environment global_env;
 ATOM registerclass(HINSTANCE hInstance, std::string app);
 HWND createwindow(HINSTANCE hInstance, std::string app);
@@ -169,13 +168,7 @@ cell proc_create1(const cells& c) {
 
 cell proc_drawtext(const cells& c)
 {
-    //long n2(atol(c[0].list[0].val.c_str()));//ps
     std::string base(c[1].val.c_str());
-    //HWND hwnd = hwnds[n0];
-    //HDC         hdc = hdcs[n1]; //hdc
-    //HWND hwnd = str_hwnd(c[0].list[1].val);
-    //HDC         hdc = str_hdc(c[0].list[2].val);
-    //PAINTSTRUCT ps = pss[n2]; //ps    
     HDC         hdc = para_str_hdc(c[0].val);
     RECT        rect = { 0 };
     para_getrect(c, 2, rect);
@@ -184,9 +177,6 @@ cell proc_drawtext(const cells& c)
 }
 cell proc_textout(const cells& c)
 {
-    //long n2(atol(c[0].list[0].val.c_str()));//ps
-    //HWND hwnd = str_hwnd(c[0].list[1].val);
-    //HDC         hdc = str_hdc(c[0].list[2].val);
     std::string base(c[3].val.c_str()); 
     HDC         hdc = para_str_hdc(c[0].val);
     long left, top;
@@ -408,17 +398,10 @@ cell proc_trap(const cells& c)
 }
 cell proc_eval(const cells& c)
 {
-    //HWND hwnd = str_hwnd(c[0].val);
-    //std::string str = c[1].val;
-    //str = eval(c[1], &global_env).val;
-    //SetWindowText(hwnd, str.c_str());
     return eval(c[0], &global_env);
 }
 cell proc_setmapmode(const cells& c)
 {
-    //long n2(atol(c[0].list[0].val.c_str()));//ps
-    //HWND hwnd = str_hwnd(c[0].list[1].val);
-    //HDC         hdc = str_hdc(c[0].list[2].val);
     HDC         hdc = para_str_hdc(c[0].val);
     long mode = atol(c[1].val.c_str());
     SetMapMode(hdc,mode);
@@ -426,9 +409,6 @@ cell proc_setmapmode(const cells& c)
 }
 cell proc_setwindowextent(const cells& c)
 {
-    //long n2(atol(c[0].list[0].val.c_str()));//ps
-    //HWND hwnd = str_hwnd(c[0].list[1].val);
-    //HDC         hdc = str_hdc(c[0].list[2].val);
     HDC         hdc = para_str_hdc(c[0].val);
     long x = atol(c[1].val.c_str());
     long y = atol(c[2].val.c_str());
@@ -437,9 +417,6 @@ cell proc_setwindowextent(const cells& c)
 }
 cell proc_setviewextent(const cells& c)
 {
-    //long n2(atol(c[0].list[0].val.c_str()));//ps
-    //HWND hwnd = str_hwnd(c[0].list[1].val);
-    //HDC         hdc = str_hdc(c[0].list[2].val);
     HDC         hdc = para_str_hdc(c[0].val);
     long x = atol(c[1].val.c_str());
     long y = atol(c[2].val.c_str());
@@ -447,12 +424,7 @@ cell proc_setviewextent(const cells& c)
     return true_sym;
 }
 cell proc_line(const cells& c)
-{
-    //long n2(atol(c[0].list[0].val.c_str()));//ps
-    //HWND hwnd = hwnds[n0];
-    //HDC         hdc = hdcs[n1]; //hdc
-/*    HWND hwnd = str_hwnd(c[0].list[1].val);
-    HDC         hdc = str_hdc(c[0].list[2].val); */  
+{   
     HDC         hdc = para_str_hdc(c[0].val);
     long left(atol(c[1].val.c_str()));
     long top(atol(c[2].val.c_str()));
@@ -469,25 +441,13 @@ cell proc_getclientrect(const cells& c) {
     DWORD64 n1(_atoi64(c[0].val.c_str()));
     HWND hw = (HWND)n1;
     HWND hwnd = hw;
-    //HWND hwnd = hwnds[n0];
     GetClientRect(hwnd, &rect);
-    //long mapmode(atol(c[1].val.c_str()));
-    //long left(atol(c[1].val.c_str()));
-    //long top(atol(c[2].val.c_str()));
-    //long right(atol(c[3].val.c_str()));
-    //long bottom(atol(c[4].val.c_str()));
     std::ostringstream stream;
     stream << "(list " << rect.left << " " <<rect.top << " " << rect.right << " "<< rect.bottom << " " << " )";
     return run(stream.str(), &global_env);
 }
 //(def rect(lr2dr hdc mapmode rect))
 cell proc_lr2dr(const cells& c) {
-    //RECT        rect;
-    //DWORD64 n1(_atoi64(c[0].val.c_str()));
-    //HWND hw = (HWND)n1;
-    //HWND hwnd = hw;
-    //HWND hwnd = hwnds[n0];
-    //GetClientRect(hwnd, &rect);
     HDC         hdc = para_str_hdc(c[0].val);
     long mapmode = atol(c[1].val.c_str()); 
     long left = atol(c[2].list[0].val.c_str());
@@ -528,12 +488,7 @@ cell proc_endpaint(const cells& c) {
     long n2(atol(c[0].list[0].val.c_str()));//ps
     HWND hwnd = para_str_hwnd(c[0].list[1].val);        
     PAINTSTRUCT* ps1 = para_str_ps(c[0].list[3].val);
-
-    
-
     EndPaint(hwnd, ps1);
-
-    //pss.pop_back();
     return true_sym;
 }
 
@@ -619,11 +574,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
         case WM_CREATE:        
-            return 0;       
-        //case WM_CHAR:
-        //    proc_char1(hwnd,wParam);
-        //    return 0;
-        
+            return 0;               
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -681,12 +632,7 @@ void add_winglobals() {
     global_env["createstatic"] = cell(&proc_createstatic);    
     global_env["ls_getsel"] = cell(&proc_ls_getsel);
     global_env["GetEnvironmentStrings"] = cell(&proc_GetEnvironmentStrings);
-    global_env["ls_add"] = cell(&proc_ls_add);
-    /*global_env["mouseup1"] = cell(&proc_up_wrap);
-    global_env["mousedown1"] = cell(&proc_down_wrap);
-    global_env["mousemove1"] = cell(&proc_move_wrap);
-    global_env["paint1"] = cell(&proc_paint_wrap)*/;
-    //global_env["char1"] = cell(&proc_char1_wrap);
+    global_env["ls_add"] = cell(&proc_ls_add);    
     global_env["tostring"] = cell(&proc_tostring);
     global_env["invalidaterect"] = cell(&proc_invalidaterect);
     global_env["rect_xor"] = cell(&proc_rect_xor);
