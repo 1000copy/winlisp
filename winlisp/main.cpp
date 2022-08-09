@@ -7,38 +7,7 @@
 #include "listview.h"
 #include "proc.h"
 
-#define IDM_FILE_NEW 1
-#define IDM_FILE_OPEN 2
-#define IDM_FILE_QUIT 3
-#define IDM_SYS_ABOUT   1
-#define IDM_SYS_HELP    2
-#define IDM_SYS_REMOVE  3
 static TCHAR szAppName[] = TEXT("PoorMenu");
-void AddMenus(HWND hwnd) {
-
-    HMENU hMenubar;
-    HMENU hMenu;
-
-    hMenubar = CreateMenu();
-    hMenu = CreateMenu();
-
-    AppendMenuW(hMenu, MF_STRING, IDM_FILE_NEW, L"&New");
-    AppendMenuW(hMenu, MF_STRING, IDM_FILE_OPEN, L"&Open");
-    AppendMenuW(hMenu, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(hMenu, MF_STRING, IDM_FILE_QUIT, L"&Quit");
-
-    AppendMenuW(hMenubar, MF_POPUP, (UINT_PTR)hMenu, L"&File");
-    hMenu = CreateMenu();
-
-    AppendMenuW(hMenu, MF_STRING, IDM_FILE_NEW, L"&New");
-    AppendMenuW(hMenu, MF_STRING, IDM_FILE_OPEN, L"&Open");
-    AppendMenuW(hMenu, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(hMenu, MF_STRING, IDM_FILE_QUIT, L"&Quit");
-
-    AppendMenuW(hMenubar, MF_POPUP, (UINT_PTR)hMenu, L"&File2");
-
-    SetMenu(hwnd, hMenubar);
-}
 
 environment global_env;
 PAINTSTRUCT ps;
@@ -100,54 +69,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     }   
     
     static HWND hwndEdit = 0; std::stringstream str1;
-    HMENU    hMenu;
+    
     switch (message)
-    {
-        case WM_CREATE:        
-            hMenu = GetSystemMenu(hwnd, FALSE);
-
-            AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
-            AppendMenu(hMenu, MF_STRING, IDM_SYS_ABOUT, TEXT("About..."));
-            AppendMenu(hMenu, MF_STRING, IDM_SYS_HELP, TEXT("Help..."));
-            AppendMenu(hMenu, MF_STRING, IDM_SYS_REMOVE, TEXT("Remove Additions"));
-            AddMenus(hwnd);
-            return 0;               
-        case WM_COMMAND:
-
-            switch (LOWORD(wParam)) {
-
-            case IDM_FILE_NEW:
-            case IDM_FILE_OPEN:
-
-                MessageBeep(MB_ICONINFORMATION);
-                break;
-
-            case IDM_FILE_QUIT:
-
-                SendMessage(hwnd, WM_CLOSE, 0, 0);
-                break;
-            }
-
-            break;
-        case WM_SYSCOMMAND:
-            switch (LOWORD(wParam))
-            {
-            case IDM_SYS_ABOUT:
-                MessageBox(hwnd, TEXT("A Poor-Person's Menu Program\n")
-                    TEXT("(c)Reco ,2022"),
-                    szAppName, MB_OK | MB_ICONINFORMATION);
-                return 0;
-
-            case IDM_SYS_HELP:
-                MessageBox(hwnd, TEXT("Help not yet implemented!"),
-                    szAppName, MB_OK | MB_ICONEXCLAMATION);
-                return 0;
-
-            case IDM_SYS_REMOVE:
-                GetSystemMenu(hwnd, TRUE);
-                return 0;
-            }
-            break;
+    {       
 
     case WM_DESTROY:
         PostQuitMessage(0);

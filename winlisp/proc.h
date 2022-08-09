@@ -78,3 +78,7 @@ void onpaint(HWND hwnd);
 cell proc_getclientrect(const cells& c);
 //(def rect(lr2dr hdc mapmode rect))
 cell proc_lr2dr(const cells& c);
+cell proc_appendmenu(const cells& c);
+cell proc_getsystemmenu(const cells& c);
+cell proc_createmenu(const cells& c);
+cell proc_setmenu(const cells& c);

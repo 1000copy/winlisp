@@ -1,5 +1,39 @@
 (begin    
-    
+    (def    WM_CHAR 258 WM_CHAR 0x0102
+            WM_COMMAND          0x0111
+            WM_SYSCOMMAND       0x0112
+    )
+    (def 
+         MF_INSERT           0x00000000
+         MF_CHANGE           0x00000080
+         MF_APPEND           0x00000100
+         MF_DELETE           0x00000200
+         MF_REMOVE           0x00001000
+
+         MF_BYCOMMAND        0x00000000
+         MF_BYPOSITION       0x00000400
+
+         MF_SEPARATOR        0x00000800
+
+         MF_ENABLED          0x00000000
+         MF_GRAYED           0x00000001
+         MF_DISABLED         0x00000002
+
+         MF_UNCHECKED        0x00000000
+         MF_CHECKED          0x00000008
+         MF_USECHECKBITMAPS  0x00000200
+
+         MF_STRING           0x00000000
+         MF_BITMAP           0x00000004
+         MF_OWNERDRAW        0x00000100
+
+         MF_POPUP            0x00000010
+         MF_MENUBARBREAK     0x00000020
+         MF_MENUBREAK        0x00000040
+
+         MF_UNHILITE         0x00000000
+         MF_HILITE           0x00000080
+    )
     (def 
         WM_MOUSEMOVE                    0x0200
         WM_LBUTTONDOWN                  0x0201
@@ -34,9 +68,7 @@
             BN_UNPUSHED         BN_UNHILITE
             BN_DBLCLK           BN_DOUBLECLICKED
             BN_SETFOCUS         6
-            BN_KILLFOCUS        7)    
-    (def    WM_CHAR 258 WM_CHAR 0x0102
-            WM_COMMAND          0x0111)
+            BN_KILLFOCUS        7)        
     (def    BS_PUSHBUTTON       0x00000000
             BS_DEFPUSHBUTTON    0x00000001
             BS_CHECKBOX         0x00000002

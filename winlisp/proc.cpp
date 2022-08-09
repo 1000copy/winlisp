@@ -40,6 +40,10 @@ void add_winglobals(environment& global_env) {
     global_env["invalidaterect"] = cell(&proc_invalidaterect);
     global_env["rect_xor"] = cell(&proc_rect_xor);
     global_env["rectangle"] = cell(&proc_rect1);
+    global_env["getsystemmenu"] = cell(&proc_getsystemmenu);
+    global_env["createmenu"] = cell(&proc_createmenu);
+    global_env["setmenu"] = cell(&proc_setmenu);
+    global_env["appendmenu"] = cell(&proc_appendmenu);
 }
 
 
@@ -371,6 +375,36 @@ cell proc_trap(const cells& c)
     std::string str = c[1].val;
     str = eval(c[1], &global_env).val;
     SetWindowText(hwnd, str.c_str());
+    return true_sym;
+}
+cell proc_getsystemmenu(const cells& c)
+{
+    HWND hwnd = para_str_hwnd(c[0].val);
+    cell r(String, std::to_string((LONG64)GetSystemMenu(hwnd, false)));
+    return r;
+}
+cell proc_createmenu(const cells& c)
+{
+    HMENU h = CreateMenu();
+    cell r(String, std::to_string((LONG64)h));
+    return r;
+}
+cell proc_setmenu(const cells& c)
+{
+    HWND hwnd = para_str_hwnd(c[0].val);
+    HMENU handle = para_tohmenu(c[1]);
+    SetMenu(hwnd, handle);    
+    return true_sym;
+}
+
+cell proc_appendmenu(const cells& c)
+{
+    HMENU handle = para_tohmenu(c[0]);
+    LONG  style= atol(c[1].val.c_str());
+    LONG  id = atol(c[2].val.c_str());
+    std::string str (c[3].val);
+    AppendMenu(handle, style, id, str.c_str());
+    //cell r(String, std::to_string((LONG64)GetSystemMenu(hwnd, false)));
     return true_sym;
 }
 cell proc_eval(const cells& c)
