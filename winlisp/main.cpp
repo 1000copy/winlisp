@@ -690,7 +690,7 @@ void add_winglobals() {
     global_env["tostring"] = cell(&proc_tostring);
     global_env["invalidaterect"] = cell(&proc_invalidaterect);
     global_env["rect_xor"] = cell(&proc_rect_xor);
-    global_env["rect1"] = cell(&proc_rect1);
+    global_env["rectangle"] = cell(&proc_rect1);
     
        
 }
