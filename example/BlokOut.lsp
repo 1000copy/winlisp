@@ -3,12 +3,9 @@
     (def 
         ptbegin 0 
         ptend 0
-        x 0
-        y 0
         isblocking #f
         isvalidbox #f
-        hdc 0
-        ps  0
+        hdc 0        
     )
     (define oncreate (lambda (hwnd )        
         (begin            
