@@ -21,11 +21,10 @@
         (setwindowtext hwnd 'command')
     )))
     (define ondown(lambda(hwnd msg wp lp)(begin
-        (set! x (loword lp))
-        (set! y (hiword lp))
-        (set! ptbegin (list x y))
-        (set! ptend (list x y))
-        (setwindowtext hwnd (tostring ptbegin))        
+        (set! 
+            ptbegin (list (loword lp) (hiword lp)) 
+            ptend ptbegin)
+        (# setwindowtext hwnd (tostring ptbegin))        
         (# mousedown1 hwnd lp)
         (rect_xor hwnd ptbegin ptend)
         (set! isblocking #t)
@@ -34,9 +33,7 @@
         (if isblocking (begin
             (setwindowtext hwnd (tostring ptend)
             (rect_xor hwnd ptbegin ptend)
-            (set! x (loword lp))
-            (set! y (hiword lp))
-            (set! ptend (list x y))
+            (set! ptend (list (loword lp) (hiword lp)))
             (rect_xor hwnd ptbegin ptend)
         )))        
         (# mousemove1 hwnd lp)
@@ -44,10 +41,8 @@
     (define onup(lambda(hwnd msg wp lp)(begin        
         (if isblocking (begin
             (setwindowtext hwnd (tostring ptend)
-            (rect_xor hwnd ptbegin ptend)
-            (set! x (loword lp))
-            (set! y (hiword lp))
-            (set! ptend (list x y))
+            (rect_xor hwnd ptbegin ptend)            
+            (set! ptend (list (loword lp) (hiword lp)))
             (set! isblocking #f isvalidbox #t)
             (invalidaterect hwnd)
         )))
@@ -57,7 +52,7 @@
             (define triple (beginpaint hwnd))
             (set! hdc (nth triple 2))
             (if isvalidbox(begin
-                (rect1 hdc ptbegin ptend)
+                (rectangle hdc ptbegin ptend)
             ))
             (endpaint  triple)        
     )))
