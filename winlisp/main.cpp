@@ -61,7 +61,6 @@ ATOM registerclass(HINSTANCE hInstance, std::string app) {
     return RegisterClass(&wndclass);
 }
 
-void onpaint(HWND hwnd);
 bool haserror=false;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
