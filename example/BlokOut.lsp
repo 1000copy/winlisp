@@ -3,8 +3,10 @@
     (def 
         ptbegin 0 
         ptend 0
-        isblocking 0
-        isvalidbox 0
+        x 0
+        y 0
+        isblocking #f
+        isvalidbox #f
         hdc 0
         ps  0
     )
@@ -19,27 +21,53 @@
         (setwindowtext hwnd 'command')
     )))
     (define ondown(lambda(hwnd msg wp lp)(begin
-        (setwindowtext hwnd 'd')
-        (mousedown1 hwnd lp)
+        (set! x (loword lp))
+        (set! y (hiword lp))
+        (set! ptbegin (list x y))
+        (set! ptend (list x y))
+        (setwindowtext hwnd (tostring ptbegin))        
+        (# mousedown1 hwnd lp)
+        (rect_xor hwnd ptbegin ptend)
+        (set! isblocking #t)
     )))
-    (define onmove(lambda(hwnd msg wp lp)(begin
-        (setwindowtext hwnd 'm')
-        (mousemove1 hwnd lp)
+    (define onmove(lambda(hwnd msg wp lp)(begin        
+        (if isblocking (begin
+            (setwindowtext hwnd (tostring ptend)
+            (rect_xor hwnd ptbegin ptend)
+            (set! x (loword lp))
+            (set! y (hiword lp))
+            (set! ptend (list x y))
+            (rect_xor hwnd ptbegin ptend)
+        )))        
+        (# mousemove1 hwnd lp)
     )))
-    (define onup(lambda(hwnd msg wp lp)(begin
-        (setwindowtext hwnd 'u')
-        (mouseup1 hwnd lp)
+    (define onup(lambda(hwnd msg wp lp)(begin        
+        (if isblocking (begin
+            (setwindowtext hwnd (tostring ptend)
+            (rect_xor hwnd ptbegin ptend)
+            (set! x (loword lp))
+            (set! y (hiword lp))
+            (set! ptend (list x y))
+            (set! isblocking #f isvalidbox #t)
+            (invalidaterect hwnd)
+        )))
+        
     )))
     (define onpaint(lambda(hwnd msg wp lp)(begin
             (define triple (beginpaint hwnd))
-            (def hdc (nth triple 2))
-            (paint1 hdc)    
+            (set! hdc (nth triple 2))
+            (if isvalidbox(begin
+                (rect1 hdc ptbegin ptend)
+            ))
             (endpaint  triple)        
     )))
     (define onchar(lambda(hwnd msg wp lp)(begin
         (setwindowtext hwnd 'char')
-        (char1 hwnd wp)
-    )))
+        (if (and isblocking (= wp 27))(begin
+            (rect_xor hwnd ptbegin ptend)
+            (set! isblocking #f)
+        )        
+    ))))
     (define winproc (lambda (hwnd msg wp lp)
         (begin
             (if (= WM_CREATE msg)(oncreate hwnd))
