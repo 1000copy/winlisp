@@ -12,7 +12,9 @@ void Rectangle1(HDC hdc, int l, int t, int r, int b) {
     LineTo(hdc, r, t);
     LineTo(hdc, l, t);
 }
-
+HMENU para_tohmenu(const cell c) {
+    return (HMENU)atoll(c.val.c_str());
+}
 void rect_xor(HWND hwnd, POINT ptBeg, POINT ptEnd)
 {
     HDC hdc;
@@ -265,25 +267,25 @@ cell proc_createbutton(const cells& c)
     DWORD iStyle = atol(c[1].val.c_str());
     RECT rect = {0};
     para_getrect(c, 4, rect);
-    HMENU id = (HMENU)atol(c[2].val.c_str());
+    HMENU id = para_tohmenu(c[2]);
     std::string title = c[3].val;
     HWND hwndButton = CreateWindow(TEXT("button"),
         title.c_str(),
         WS_CHILD | WS_VISIBLE | iStyle,
         rect.left,rect.top,rect.right,rect.bottom,
-        hwnd, (HMENU)id,
+        hwnd, id,
         0, NULL);
     cell r(String, para_hwnd_str(hwndButton));
     return r;
 }
 cell proc_ls_getsel(const cells& c)
 {
-    int          iIndex, iLength, cxChar, cyChar;
+    int          iIndex, iLength;
     TCHAR* pVarName, * pVarValue;
 
     HWND hwndList = para_str_hwnd(c[0].val);
-    iIndex = SendMessage(hwndList, LB_GETCURSEL, 0, 0);
-    iLength = SendMessage(hwndList, LB_GETTEXTLEN, iIndex, 0) + 1;
+    iIndex = (int)SendMessage(hwndList, LB_GETCURSEL, 0, 0);
+    iLength = (int)SendMessage(hwndList, LB_GETTEXTLEN, iIndex, 0) + 1;
     pVarName = (TCHAR*)calloc(iLength, sizeof(TCHAR));
     SendMessage(hwndList, LB_GETTEXT, iIndex, (LPARAM)pVarName);
 
@@ -321,7 +323,7 @@ cell proc_GetEnvironmentStrings(const cells& c)
             pVarBeg = pVarBlock;              // Beginning of variable name
             while (*pVarBlock++ != '=');      // Scan until '='
             pVarEnd = pVarBlock - 1;          // Points to '=' sign
-            iLength = pVarEnd - pVarBeg;      // Length of variable name
+            iLength = (int)(pVarEnd - pVarBeg);      // Length of variable name
 
                  // Allocate memory for the variable name and terminating
                  // zero. Copy the variable name and append a zero.
@@ -349,32 +351,31 @@ cell proc_createlistbox(const cells& c)
     DWORD iStyle = atol(c[1].val.c_str());
     RECT rect = { 0 };
     para_getrect(c, 4, rect);
-    HMENU id = (HMENU)atol(c[2].val.c_str());
+    HMENU id = para_tohmenu(c[2]);//(HMENU)atoll(c[2].val.c_str());
     std::string title = c[3].val;
     HWND hList = CreateWindow(TEXT("listbox"),
         NULL,
         WS_CHILD | WS_VISIBLE | LBS_STANDARD,
         rect.left, rect.top, rect.right, rect.bottom,
-        hwnd, (HMENU)id,
+        hwnd, id,
         0, NULL);
     //FillListBox(hList);
     cell r(String, para_hwnd_str(hList));
     return r;
 }
-
 cell proc_createstatic(const cells& c)
 {
     HWND hwnd = para_str_hwnd(c[0].val);
     DWORD iStyle = atol(c[1].val.c_str());
     RECT rect = { 0 };
     para_getrect(c, 4, rect);
-    HMENU id = (HMENU)atol(c[2].val.c_str());
+    HMENU id = para_tohmenu(c[2]);
     std::string title = c[3].val;
     HWND hwndButton = CreateWindow(TEXT("static"),
         NULL,
         WS_CHILD | WS_VISIBLE | SS_LEFT,
         rect.left, rect.top, rect.right, rect.bottom,
-        hwnd, (HMENU)id,
+        hwnd, id,
         0, NULL);
     cell r(String, para_hwnd_str(hwndButton));
     return r;
@@ -615,8 +616,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     
     static HWND hwndEdit = 0; std::stringstream str1;
     
-    HDC          hdc;
-    PAINTSTRUCT  ps;
     switch (message)
     {
         case WM_CREATE:        
