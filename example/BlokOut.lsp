@@ -20,18 +20,25 @@
     )))
     (define ondown(lambda(hwnd msg wp lp)(begin
         (setwindowtext hwnd 'd')
+        (mousedown1 hwnd lp)
     )))
     (define onmove(lambda(hwnd msg wp lp)(begin
         (setwindowtext hwnd 'm')
+        (mousemove1 hwnd lp)
     )))
     (define onup(lambda(hwnd msg wp lp)(begin
         (setwindowtext hwnd 'u')
+        (mouseup1 hwnd lp)
     )))
     (define onpaint(lambda(hwnd msg wp lp)(begin
-        
+            (define triple (beginpaint hwnd))
+            (def hdc (nth triple 2))
+            (paint1 hdc)    
+            (endpaint  triple)        
     )))
     (define onchar(lambda(hwnd msg wp lp)(begin
         (setwindowtext hwnd 'char')
+        (char1 hwnd wp)
     )))
     (define winproc (lambda (hwnd msg wp lp)
         (begin

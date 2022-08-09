@@ -543,6 +543,108 @@ ATOM registerclass(HINSTANCE hInstance, std::string app) {
 
 void onpaint(HWND hwnd);
 bool haserror=false;
+// group begin
+static BOOL  fBlocking, fValidBox;
+static POINT ptBeg, ptEnd, ptBoxBeg, ptBoxEnd;
+void proc_down(HWND hwnd,LPARAM lParam) {
+    ptBeg.x = ptEnd.x = LOWORD(lParam);
+    ptBeg.y = ptEnd.y = HIWORD(lParam);
+
+    DrawBoxOutline(hwnd, ptBeg, ptEnd);
+
+    SetCursor(LoadCursor(NULL, IDC_CROSS));
+
+    fBlocking = TRUE;
+}
+void proc_move(HWND hwnd, LPARAM lParam) {
+    if (fBlocking)
+    {
+        SetCursor(LoadCursor(NULL, IDC_CROSS));
+
+        DrawBoxOutline(hwnd, ptBeg, ptEnd);
+
+        ptEnd.x = LOWORD(lParam);
+        ptEnd.y = HIWORD(lParam);
+
+        DrawBoxOutline(hwnd, ptBeg, ptEnd);
+    }
+}
+void proc_up(HWND hwnd, LPARAM lParam) {
+    if (fBlocking)
+    {
+        DrawBoxOutline(hwnd, ptBeg, ptEnd);
+
+        ptBoxBeg = ptBeg;
+        ptBoxEnd.x = LOWORD(lParam);
+        ptBoxEnd.y = HIWORD(lParam);
+
+        SetCursor(LoadCursor(NULL, IDC_ARROW));
+
+        fBlocking = FALSE;
+        fValidBox = TRUE;
+
+        InvalidateRect(hwnd, NULL, TRUE);
+    }
+}
+void proc_paint(HDC hdc) {
+    if (fValidBox)
+    {
+        //SelectObject (hdc, GetStockObject (BLACK_BRUSH)) ;
+        Rectangle1(hdc, ptBoxBeg.x, ptBoxBeg.y,
+            ptBoxEnd.x, ptBoxEnd.y);
+    }
+
+    if (fBlocking)
+    {
+        SetROP2(hdc, R2_NOT);
+        //SelectObject (hdc, GetStockObject (NULL_BRUSH)) ;
+        Rectangle1(hdc, ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y);
+    }
+}
+cell proc_up_wrap(const cells& c)
+{
+    HWND hwnd = para_str_hwnd(c[0].val);
+    long lp = (atol(c[1].val.c_str()));
+    proc_up(hwnd, (LPARAM)lp);
+    return true_sym;
+}
+cell proc_move_wrap(const cells& c)
+{
+    HWND hwnd = para_str_hwnd(c[0].val);
+    long lp = (atol(c[1].val.c_str()));
+    proc_move(hwnd, (LPARAM)lp);
+    return true_sym;
+}
+cell proc_down_wrap(const cells& c)
+{
+    HWND hwnd = para_str_hwnd(c[0].val);
+    long lp = (atol(c[1].val.c_str()));
+    proc_down(hwnd, (LPARAM)lp);
+    return true_sym;
+}
+cell proc_paint_wrap(const cells& c)
+{
+    HDC hdc = para_str_hdc(c[0].val);    
+    proc_paint(hdc);
+    return true_sym;
+}
+void proc_char1(HWND hwnd,WPARAM wParam) {
+    if (fBlocking & (wParam == '\x1B'))     // i.e., Escape
+    {
+        DrawBoxOutline(hwnd, ptBeg, ptEnd);
+        SetCursor(LoadCursor(NULL, IDC_ARROW));
+        fBlocking = FALSE;
+    }
+}
+cell proc_char1_wrap(const cells& c)
+{
+    HWND hwnd = para_str_hwnd(c[0].val);
+    long wp = (atol(c[1].val.c_str()));     
+    proc_char1(hwnd, (WPARAM)wp);
+    return true_sym;
+}
+
+// group end
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
@@ -571,9 +673,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     catch (std::string msg) {
-        //MessageBox(hwnd, msg.c_str(), "error", 0);
-        //return DefWindowProc(hwnd, message, wParam, lParam);
-        //SetWindowText(hwnd, msg.c_str());
         ofstream myFile_Handler;
         myFile_Handler.open("log.txt", std::ios_base::app);
         myFile_Handler << msg << endl;
@@ -583,87 +682,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     }   
     
     static HWND hwndEdit = 0; std::stringstream str1;
-    static BOOL  fBlocking, fValidBox;
-    static POINT ptBeg, ptEnd, ptBoxBeg, ptBoxEnd;
+    
     HDC          hdc;
     PAINTSTRUCT  ps;
     switch (message)
     {
         case WM_CREATE:        
-            return 0;
-        case WM_LBUTTONDOWN:
-            ptBeg.x = ptEnd.x = LOWORD(lParam);
-            ptBeg.y = ptEnd.y = HIWORD(lParam);
-
-            DrawBoxOutline(hwnd, ptBeg, ptEnd);
-
-            SetCursor(LoadCursor(NULL, IDC_CROSS));
-
-            fBlocking = TRUE;
-            return 0;
-
-        case WM_MOUSEMOVE:
-            if (fBlocking)
-            {
-                SetCursor(LoadCursor(NULL, IDC_CROSS));
-
-                DrawBoxOutline(hwnd, ptBeg, ptEnd);
-
-                ptEnd.x = LOWORD(lParam);
-                ptEnd.y = HIWORD(lParam);
-
-                DrawBoxOutline(hwnd, ptBeg, ptEnd);
-            }
-            return 0;
-
-        case WM_LBUTTONUP:
-            if (fBlocking)
-            {
-                DrawBoxOutline(hwnd, ptBeg, ptEnd);
-
-                ptBoxBeg = ptBeg;
-                ptBoxEnd.x = LOWORD(lParam);
-                ptBoxEnd.y = HIWORD(lParam);
-
-                SetCursor(LoadCursor(NULL, IDC_ARROW));
-
-                fBlocking = FALSE;
-                fValidBox = TRUE;
-
-                InvalidateRect(hwnd, NULL, TRUE);
-            }
-            return 0;
-
-        case WM_CHAR:
-            if (fBlocking & (wParam == '\x1B'))     // i.e., Escape
-            {
-                DrawBoxOutline(hwnd, ptBeg, ptEnd);
-
-                SetCursor(LoadCursor(NULL, IDC_ARROW));
-
-                fBlocking = FALSE;
-            }
-            return 0;
-
-        case WM_PAINT:
-            hdc = BeginPaint(hwnd, &ps);
-
-            if (fValidBox)
-            {
-                //SelectObject (hdc, GetStockObject (BLACK_BRUSH)) ;
-                Rectangle1(hdc, ptBoxBeg.x, ptBoxBeg.y,
-                    ptBoxEnd.x, ptBoxEnd.y);
-            }
-
-            if (fBlocking)
-            {
-                SetROP2(hdc, R2_NOT);
-                //SelectObject (hdc, GetStockObject (NULL_BRUSH)) ;
-                Rectangle1(hdc, ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y);
-            }
-
-            EndPaint(hwnd, &ps);
-            return 0;
+            return 0;       
+        //case WM_CHAR:
+        //    proc_char1(hwnd,wParam);
+        //    return 0;
+        
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -722,7 +751,11 @@ void add_winglobals() {
     global_env["ls_getsel"] = cell(&proc_ls_getsel);
     global_env["GetEnvironmentStrings"] = cell(&proc_GetEnvironmentStrings);
     global_env["ls_add"] = cell(&proc_ls_add);
-    
+    global_env["mouseup1"] = cell(&proc_up_wrap);
+    global_env["mousedown1"] = cell(&proc_down_wrap);
+    global_env["mousemove1"] = cell(&proc_move_wrap);
+    global_env["paint1"] = cell(&proc_paint_wrap);
+    global_env["char1"] = cell(&proc_char1_wrap);
 }
 #include "listview.h"
 
