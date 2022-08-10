@@ -84,7 +84,9 @@
     (define 
         WM_CREATE   1
         WM_PAINT    15
-        WM_DESTROY  2)  
+        WM_DESTROY  2
+        WM_MOVE                         0x0003
+        WM_SIZE                         0x0005)  
     (def 
         MM_ANISOTROPIC      8 
         MM_TEXT             1

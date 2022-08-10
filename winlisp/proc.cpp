@@ -44,6 +44,30 @@ void add_winglobals(environment& global_env) {
     global_env["createmenu"] = cell(&proc_createmenu);
     global_env["setmenu"] = cell(&proc_setmenu);
     global_env["appendmenu"] = cell(&proc_appendmenu);
+    global_env["moveto"] = cell(&proc_moveto);
+    global_env["lineto"] = cell(&proc_lineto);
+    global_env["savedc"] = cell(&proc_savedc);
+    global_env["restoredc"] = cell(&proc_restoredc);
+    global_env["setlogicalextent"] = cell(&proc_setlogicalextent);
+    global_env["setdeviceextent"] = cell(&proc_setdeviceextent);
+    global_env["setdeviceorigin"] = cell(&proc_setdeviceorigin);
+    global_env["ellipse"] = cell(&proc_ellipse);    
+}
+cell proc_moveto(const cells& c)
+{
+    HDC hdc = para_str_hdc(c[0].val);
+    long x = atol(c[1].val.c_str());
+    long y = atol(c[2].val.c_str());
+    MoveToEx(hdc, x, y,NULL);
+    return true_sym;
+}
+cell proc_lineto(const cells& c)
+{
+    HDC hdc = para_str_hdc(c[0].val);
+    long x = atol(c[1].val.c_str());
+    long y = atol(c[2].val.c_str());
+    LineTo(hdc,x,y);
+    return true_sym;
 }
 
 
@@ -499,5 +523,45 @@ cell proc_endpaint(const cells& c) {
     HWND hwnd = para_str_hwnd(c[0].list[1].val);
     PAINTSTRUCT* ps1 = para_str_ps(c[0].list[3].val);
     EndPaint(hwnd, ps1);
+    return true_sym;
+}
+cell proc_savedc(const cells& c){
+    HDC         hdc = para_str_hdc(c[0].val);
+    SaveDC(hdc);
+    return true_sym;
+}
+cell proc_restoredc(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    RestoreDC(hdc, -1);
+    return true_sym;
+}
+cell proc_setlogicalextent(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    long x = atol(c[1].val.c_str());
+    long y = atol(c[2].val.c_str());
+    SetWindowExtEx(hdc, x,y, NULL);
+    return true_sym;
+}
+cell proc_setdeviceextent(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    long x = atol(c[1].val.c_str());
+    long y = atol(c[2].val.c_str());
+    SetViewportExtEx(hdc, x, y, NULL);
+    return true_sym;
+}
+cell proc_setdeviceorigin(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    long x = atol(c[1].val.c_str());
+    long y = atol(c[2].val.c_str());
+    SetViewportOrgEx(hdc, x, y, NULL);
+    return true_sym;
+}
+cell proc_ellipse(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    long a = atol(c[1].val.c_str());
+    long b = atol(c[2].val.c_str());
+    long cc = atol(c[3].val.c_str());
+    long d = atol(c[4].val.c_str());
+    Ellipse(hdc, a, b, cc, d);
     return true_sym;
 }

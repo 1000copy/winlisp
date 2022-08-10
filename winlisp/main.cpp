@@ -31,6 +31,34 @@ ATOM registerclass(HINSTANCE hInstance, std::string app) {
 }
 
 bool haserror=false;
+void PageGDICalls(HDC hdcPrn, int cxPage, int cyPage)
+{
+    static TCHAR szTextStr[] = TEXT("Hello, Printer!");
+
+    Rectangle(hdcPrn, 0, 0, cxPage, cyPage);
+
+    MoveToEx(hdcPrn, 0, 0, NULL);
+    LineTo(hdcPrn, cxPage, cyPage);
+    MoveToEx(hdcPrn, cxPage, 0, NULL);
+    LineTo(hdcPrn, 0, cyPage);
+
+    SaveDC(hdcPrn);
+
+    SetMapMode(hdcPrn, MM_ISOTROPIC);//MM_ANISOTROPIC
+    SetWindowExtEx(hdcPrn, 1000, 1000, NULL);
+    SetViewportExtEx(hdcPrn, cxPage / 2, -cyPage / 2, NULL);
+    SetViewportOrgEx(hdcPrn, cxPage / 2, cyPage / 2, NULL);
+    SIZE size = { 0,0 };
+    GetWindowExtEx(hdcPrn, &size);
+    //MM_ISOTROPIC 各向同性的模式下，取得的Viewport Size和设置，通常是不同的。一遍保证横向纵向的比例正确。
+    GetViewportExtEx(hdcPrn, &size);
+    Ellipse(hdcPrn, -500, 500, 500, -500);
+
+    SetTextAlign(hdcPrn, TA_BASELINE | TA_CENTER);
+    TextOut(hdcPrn, 0, 0, szTextStr, lstrlen(szTextStr));
+
+    RestoreDC(hdcPrn, -1);
+}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -69,10 +97,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     }   
     
     static HWND hwndEdit = 0; std::stringstream str1;
-    
+    static int   cxClient, cyClient;
+    HDC hdc;
     switch (message)
     {       
 
+    case WM_SIZE:
+        cxClient = LOWORD(lParam);
+        cyClient = HIWORD(lParam);
+        return 0;
+    //case WM_PAINT:
+    //    hdc = BeginPaint(hwnd, &ps);
+
+    //    PageGDICalls(hdc, cxClient, cyClient);
+
+    //    EndPaint(hwnd, &ps);
+    //    return 0;
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -110,7 +150,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("poormenu.lsp");
+        std::ifstream t("c13print1.lsp");
+        //std::ifstream t("poormenu.lsp");
         //std::ifstream t("blokout.lsp");
         //std::ifstream t("environ.lsp");
         /*std::ifstream t("btnlook.lsp");*/
