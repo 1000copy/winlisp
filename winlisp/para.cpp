@@ -60,9 +60,9 @@ HDC para_str_hdc(std::string str) {
 }
 std::string para_hdc_str(HDC  hwnd) {
     std::ostringstream os;
-    os << "'";
+    os << "";//"'"is bug
     os << (UINT64)hwnd;
-    os << "'";
+    os << "";//"'" is bug
     return os.str();
     //return std::to_string((UINT64)hwnd);
 }
