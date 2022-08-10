@@ -30,6 +30,69 @@ ATOM registerclass(HINSTANCE hInstance, std::string app) {
     return RegisterClass(&wndclass);
 }
 
+HDC GetPrinterDC(void)
+{
+    DWORD            dwNeeded, dwReturned;
+    HDC              hdc;
+    PRINTER_INFO_4* pinfo4;
+    PRINTER_INFO_5* pinfo5;
+
+    if(TRUE)
+    {
+        EnumPrinters(PRINTER_ENUM_LOCAL, NULL, 4, NULL,
+            0, &dwNeeded, &dwReturned);
+
+        pinfo4 = (PRINTER_INFO_4*)malloc(dwNeeded);
+
+        EnumPrinters(PRINTER_ENUM_LOCAL, NULL, 4, (PBYTE)pinfo4,
+            dwNeeded, &dwNeeded, &dwReturned);
+
+        hdc = CreateDC(NULL, pinfo4->pPrinterName, NULL, NULL);
+
+        free(pinfo4);
+    }
+    return hdc;
+}
+
+void PageGDICalls(HDC, int, int);     // in PRINT.C
+
+HINSTANCE hInst;
+TCHAR     szCaption[] = TEXT("Print Program 1");
+
+BOOL PrintMyPage(HWND hwnd)
+{
+    static DOCINFO di = { sizeof(DOCINFO), TEXT("Print1: Printing") };
+    BOOL           bSuccess = TRUE;
+    HDC            hdcPrn;
+    int            xPage, yPage;
+
+    if (NULL == (hdcPrn = GetPrinterDC()))
+        return FALSE;
+
+    xPage = GetDeviceCaps(hdcPrn, HORZRES);
+    yPage = GetDeviceCaps(hdcPrn, VERTRES);
+
+    if (StartDoc(hdcPrn, &di) > 0)
+    {
+        //di = { 0 };
+        if (StartPage(hdcPrn) > 0)
+        {
+            PageGDICalls(hdcPrn, xPage, yPage);
+
+            if (EndPage(hdcPrn) > 0)
+                EndDoc(hdcPrn);
+            else
+                bSuccess = FALSE;
+        }
+    }
+    else
+        bSuccess = FALSE;
+
+    DeleteDC(hdcPrn);
+    return bSuccess;
+}
+
+
 bool haserror=false;
 void PageGDICalls(HDC hdcPrn, int cxPage, int cyPage)
 {
@@ -113,6 +176,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     //    EndPaint(hwnd, &ps);
     //    return 0;
+    /*case WM_SYSCOMMAND:
+        if (wParam == 1)
+        {
+            if (!PrintMyPage(hwnd))
+                MessageBox(hwnd, TEXT("Could not print page!"),
+                    szAppName, MB_OK | MB_ICONEXCLAMATION);
+            return 0;
+        }
+        break;*/
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;

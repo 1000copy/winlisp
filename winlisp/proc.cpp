@@ -52,6 +52,14 @@ void add_winglobals(environment& global_env) {
     global_env["setdeviceextent"] = cell(&proc_setdeviceextent);
     global_env["setdeviceorigin"] = cell(&proc_setdeviceorigin);
     global_env["ellipse"] = cell(&proc_ellipse);    
+
+    global_env["getprinterdc"] = cell(&proc_getprinterdc);
+    global_env["getdevicecaps"] = cell(&proc_getdevicecaps);
+    global_env["startdoc"] = cell(&proc_startdoc);
+    global_env["startpage"] = cell(&proc_startpage);
+    global_env["endpage"] = cell(&proc_endpage);
+    global_env["enddoc"] = cell(&proc_enddoc);
+    global_env["deletedc"] = cell(&proc_deletedc);
 }
 cell proc_moveto(const cells& c)
 {
@@ -565,3 +573,98 @@ cell proc_ellipse(const cells& c) {
     Ellipse(hdc, a, b, cc, d);
     return true_sym;
 }
+HDC GetPrinterDC1(void)
+{
+    DWORD            dwNeeded, dwReturned;
+    HDC              hdc;
+    PRINTER_INFO_4* pinfo4;
+    PRINTER_INFO_5* pinfo5;
+
+    if (TRUE)
+    {
+        EnumPrinters(PRINTER_ENUM_LOCAL, NULL, 4, NULL,
+            0, &dwNeeded, &dwReturned);
+
+        pinfo4 = (PRINTER_INFO_4*)malloc(dwNeeded);
+
+        EnumPrinters(PRINTER_ENUM_LOCAL, NULL, 4, (PBYTE)pinfo4,
+            dwNeeded, &dwNeeded, &dwReturned);
+
+        hdc = CreateDC(NULL, pinfo4->pPrinterName, NULL, NULL);
+
+        free(pinfo4);
+    }
+    return hdc;
+}
+cell proc_getprinterdc(const cells& c) {
+    HDC hdc = GetPrinterDC1();
+    cell r(String, para_hdc_str(hdc));
+    return r;
+}
+cell proc_getdevicecaps(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    long arg = atol(c[1].val.c_str());
+    int x = GetDeviceCaps(hdc, arg);
+    cell r(Number, std::to_string(x));
+    return r;
+}
+cell proc_startdoc(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    static DOCINFO di = { sizeof(DOCINFO), TEXT("Print1: Printing") };
+    StartDoc(hdc, &di);
+    return true_sym;
+}
+
+cell proc_startpage(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    StartPage(hdc);
+    return true_sym;
+}
+cell proc_endpage(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    EndPage(hdc);
+    return true_sym;
+}
+cell proc_enddoc(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    EndDoc(hdc);
+    return true_sym;
+}
+cell proc_deletedc(const cells& c) {
+    HDC         hdc = para_str_hdc(c[0].val);
+    DeleteDC(hdc);
+    return true_sym;
+}
+
+//BOOL PrintMyPage(HWND hwnd)
+//{
+//    static DOCINFO di = { sizeof(DOCINFO), TEXT("Print1: Printing") };
+//    BOOL           bSuccess = TRUE;
+//    HDC            hdcPrn;
+//    int            xPage, yPage;
+//
+//    if (NULL == (hdcPrn = GetPrinterDC()))
+//        return FALSE;
+//
+//    xPage = GetDeviceCaps(hdcPrn, HORZRES);
+//    yPage = GetDeviceCaps(hdcPrn, VERTRES);
+//
+//    if (StartDoc(hdcPrn, &di) > 0)
+//    {
+//        //di = { 0 };
+//        if (StartPage(hdcPrn) > 0)
+//        {
+//            PageGDICalls(hdcPrn, xPage, yPage);
+//
+//            if (EndPage(hdcPrn) > 0)
+//                EndDoc(hdcPrn);
+//            else
+//                bSuccess = FALSE;
+//        }
+//    }
+//    else
+//        bSuccess = FALSE;
+//
+//    DeleteDC(hdcPrn);
+//    return bSuccess;
+//}

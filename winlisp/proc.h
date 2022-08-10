@@ -90,3 +90,11 @@ cell proc_setlogicalextent(const cells& c);
 cell proc_setdeviceextent(const cells& c);
 cell proc_setdeviceorigin(const cells& c);
 cell proc_ellipse(const cells& c);
+
+cell proc_getprinterdc(const cells& c);
+cell proc_getdevicecaps(const cells& c);
+cell proc_startdoc(const cells& c);
+cell proc_startpage(const cells& c);
+cell proc_endpage(const cells& c);
+cell proc_enddoc(const cells& c);
+cell proc_deletedc(const cells& c);

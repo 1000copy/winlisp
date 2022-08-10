@@ -1,4 +1,8 @@
 (begin    
+    (def 
+        HORZRES       8   
+        VERTRES       10 
+    )
     (def    WM_CHAR 258 WM_CHAR 0x0102
             WM_COMMAND          0x0111
             WM_SYSCOMMAND       0x0112
