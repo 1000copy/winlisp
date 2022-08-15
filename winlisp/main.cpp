@@ -7,6 +7,10 @@
 #include "listview.h"
 #include "proc.h"
 
+LRESULT CALLBACK DialogProc(HWND, UINT, WPARAM, LPARAM);
+HINSTANCE ghInstance;
+void CreateDialogBox(HWND);
+void RegisterDialogClass(HWND);
 static TCHAR szAppName[] = TEXT("PoorMenu");
 
 environment global_env;
@@ -179,22 +183,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         cxClient = LOWORD(lParam);
         cyClient = HIWORD(lParam);
         return 0;
-    //case WM_PAINT:
-    //    hdc = BeginPaint(hwnd, &ps);
+    case WM_CREATE:
+        RegisterDialogClass(hwnd);
+        CreateWindowW(L"button", L"Show dialog",
+            WS_VISIBLE | WS_CHILD,
+            20, 50, 95, 25, hwnd, (HMENU)1, NULL, NULL);
+        break;
 
-    //    PageGDICalls(hdc, cxClient, cyClient);
-
-    //    EndPaint(hwnd, &ps);
-    //    return 0;
-    /*case WM_SYSCOMMAND:
-        if (wParam == 1)
-        {
-            if (!PrintMyPage(hwnd))
-                MessageBox(hwnd, TEXT("Could not print page!"),
-                    szAppName, MB_OK | MB_ICONEXCLAMATION);
-            return 0;
-        }
-        break;*/
+    case WM_COMMAND:
+        CreateDialogBox(hwnd);
+        break;
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -232,7 +230,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("helloworld1.lsp");
+        std::ifstream t("c11about1.lsp");        
+        //std::ifstream t("hellonamedwinproc.lsp");
         //std::ifstream t("c13print1.lsp");
         //std::ifstream t("poormenu.lsp");
         //std::ifstream t("blokout.lsp");
@@ -257,6 +256,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         myFile_Handler.close();
         exit(1);
     }
+    ghInstance = hInstance;
     while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
@@ -273,4 +273,46 @@ cell proc_load(const cells& c) {
     buffer << t.rdbuf();
     run(buffer.str(), &global_env);
     return true_sym;
+}
+
+LRESULT CALLBACK DialogProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    switch (msg) {
+
+    case WM_CREATE:
+        CreateWindowW(L"button", L"Ok",
+            WS_VISIBLE | WS_CHILD,
+            50, 50, 80, 25, hwnd, (HMENU)1, NULL, NULL);
+        break;
+
+    case WM_COMMAND:
+        DestroyWindow(hwnd);
+        break;
+
+    case WM_CLOSE:
+        DestroyWindow(hwnd);
+        break;
+
+    }
+
+    return (DefWindowProcW(hwnd, msg, wParam, lParam));
+}
+
+void RegisterDialogClass(HWND hwnd) {
+
+    WNDCLASSEXW wc = { 0 };
+    wc.cbSize = sizeof(WNDCLASSEXW);
+    wc.lpfnWndProc = (WNDPROC)DialogProc;
+    wc.hInstance = ghInstance;
+    wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
+    wc.lpszClassName = L"DialogClass";
+    RegisterClassExW(&wc);
+
+}
+
+void CreateDialogBox(HWND hwnd) {
+
+    CreateWindowExW(WS_EX_DLGMODALFRAME | WS_EX_TOPMOST, L"DialogClass", L"Dialog Box",
+        WS_VISIBLE | WS_SYSMENU | WS_CAPTION, 100, 100, 200, 150,
+        NULL, NULL, ghInstance, NULL);
 }
