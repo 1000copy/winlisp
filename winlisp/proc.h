@@ -98,3 +98,4 @@ cell proc_startpage(const cells& c);
 cell proc_endpage(const cells& c);
 cell proc_enddoc(const cells& c);
 cell proc_deletedc(const cells& c);
+std::string getwinproc(std::string classname);

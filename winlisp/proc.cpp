@@ -166,9 +166,15 @@ cell proc_quit(const cells& c) {
     PostQuitMessage(0);
     return true_sym;
 }
+std::map<std::string, std::string > map_of_winproc;
+std::string getwinproc(std::string classname) {
+    return map_of_winproc[classname];
+}
 cell proc_register(const cells& c) {
     long n(atol(c[0].val.c_str()));
     registerclass(apps[n], c[1].val.c_str());
+    if(c.size() >= 3)
+        map_of_winproc[c[1].val] = c[2].val;
     return cell(Number, "33");
 }
 cell proc_create1(const cells& c) {

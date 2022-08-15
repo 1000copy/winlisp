@@ -134,7 +134,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 #pragma warning(push, 0)
         
 #pragma warning(pop)
-        str = "(winproc  ";
+        char className[MAX_PATH];
+        int res = GetClassName(hwnd, className, MAX_PATH);
+        std::string winproc;
+        if (res > 0) {
+            std::string str(&className[0]);
+            winproc = getwinproc(str);
+        }else
+            winproc = winproc;
+        str = "(";
+        str+= winproc;
+        str += " ";
         str += para_hwnd_str(hwnd);
         str += " ";
         str += std::to_string(message);
@@ -222,7 +232,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("c13print1.lsp");
+        std::ifstream t("helloworld1.lsp");
+        //std::ifstream t("c13print1.lsp");
         //std::ifstream t("poormenu.lsp");
         //std::ifstream t("blokout.lsp");
         //std::ifstream t("environ.lsp");
