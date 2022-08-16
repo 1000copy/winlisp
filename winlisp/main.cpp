@@ -34,98 +34,9 @@ ATOM registerclass(HINSTANCE hInstance, std::string app) {
     return RegisterClass(&wndclass);
 }
 
-HDC GetPrinterDC(void)
-{
-    DWORD            dwNeeded, dwReturned;
-    HDC              hdc;
-    PRINTER_INFO_4* pinfo4;
-    PRINTER_INFO_5* pinfo5;
-
-    if(TRUE)
-    {
-        EnumPrinters(PRINTER_ENUM_LOCAL, NULL, 4, NULL,
-            0, &dwNeeded, &dwReturned);
-
-        pinfo4 = (PRINTER_INFO_4*)malloc(dwNeeded);
-
-        EnumPrinters(PRINTER_ENUM_LOCAL, NULL, 4, (PBYTE)pinfo4,
-            dwNeeded, &dwNeeded, &dwReturned);
-
-        hdc = CreateDC(NULL, pinfo4->pPrinterName, NULL, NULL);
-
-        free(pinfo4);
-    }
-    return hdc;
-}
-
-void PageGDICalls(HDC, int, int);     // in PRINT.C
-
-HINSTANCE hInst;
-TCHAR     szCaption[] = TEXT("Print Program 1");
-
-BOOL PrintMyPage(HWND hwnd)
-{
-    static DOCINFO di = { sizeof(DOCINFO), TEXT("Print1: Printing") };
-    BOOL           bSuccess = TRUE;
-    HDC            hdcPrn;
-    int            xPage, yPage;
-
-    if (NULL == (hdcPrn = GetPrinterDC()))
-        return FALSE;
-
-    xPage = GetDeviceCaps(hdcPrn, HORZRES);
-    yPage = GetDeviceCaps(hdcPrn, VERTRES);
-
-    if (StartDoc(hdcPrn, &di) > 0)
-    {
-        //di = { 0 };
-        if (StartPage(hdcPrn) > 0)
-        {
-            PageGDICalls(hdcPrn, xPage, yPage);
-
-            if (EndPage(hdcPrn) > 0)
-                EndDoc(hdcPrn);
-            else
-                bSuccess = FALSE;
-        }
-    }
-    else
-        bSuccess = FALSE;
-
-    DeleteDC(hdcPrn);
-    return bSuccess;
-}
 
 
 bool haserror=false;
-void PageGDICalls(HDC hdcPrn, int cxPage, int cyPage)
-{
-    static TCHAR szTextStr[] = TEXT("Hello, Printer!");
-
-    Rectangle(hdcPrn, 0, 0, cxPage, cyPage);
-
-    MoveToEx(hdcPrn, 0, 0, NULL);
-    LineTo(hdcPrn, cxPage, cyPage);
-    MoveToEx(hdcPrn, cxPage, 0, NULL);
-    LineTo(hdcPrn, 0, cyPage);
-
-    SaveDC(hdcPrn);
-
-    SetMapMode(hdcPrn, MM_ISOTROPIC);//MM_ANISOTROPIC
-    SetWindowExtEx(hdcPrn, 1000, 1000, NULL);
-    SetViewportExtEx(hdcPrn, cxPage / 2, -cyPage / 2, NULL);
-    SetViewportOrgEx(hdcPrn, cxPage / 2, cyPage / 2, NULL);
-    SIZE size = { 0,0 };
-    GetWindowExtEx(hdcPrn, &size);
-    //MM_ISOTROPIC 各向同性的模式下，取得的Viewport Size和设置，通常是不同的。一遍保证横向纵向的比例正确。
-    GetViewportExtEx(hdcPrn, &size);
-    Ellipse(hdcPrn, -500, 500, 500, -500);
-
-    SetTextAlign(hdcPrn, TA_BASELINE | TA_CENTER);
-    TextOut(hdcPrn, 0, 0, szTextStr, lstrlen(szTextStr));
-
-    RestoreDC(hdcPrn, -1);
-}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -144,8 +55,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         if (res > 0) {
             std::string str(&className[0]);
             winproc = getwinproc(str);
-        }else
-            winproc = winproc;
+        }
+        if(winproc == "")
+            winproc = "winproc";
         str = "(";
         str+= winproc;
         str += " ";
@@ -230,9 +142,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("c11about1.lsp");        
+        //std::ifstream t("c11about1.lsp");        
         //std::ifstream t("hellonamedwinproc.lsp");
-        //std::ifstream t("c13print1.lsp");
+        std::ifstream t("c13print1.lsp");
         //std::ifstream t("poormenu.lsp");
         //std::ifstream t("blokout.lsp");
         //std::ifstream t("environ.lsp");
