@@ -11,8 +11,7 @@
         )                
     ))
     (define dialogproc1(lambda (hwnd msg wp lp )
-        (begin
-            (if (= WM_DESTROY msg)(quit) )
+        (begin            
             (if (= WM_CREATE msg)(dialogcreate hwnd) )
             (if (= WM_COMMAND msg)(dialogcommand hwnd) )
         )                
