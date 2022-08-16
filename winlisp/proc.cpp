@@ -2,6 +2,10 @@
 extern  environment global_env;
 extern  PAINTSTRUCT ps;
 extern std::vector<HINSTANCE> apps;
+extern HINSTANCE ghInstance;
+LRESULT CALLBACK DialogProc(HWND, UINT, WPARAM, LPARAM);
+void CreateDialogBox(HWND, std::string, std::string);
+void RegisterDialogClass(HWND, std::string, std::string);
 
 cell proc_moveto(const cells& c)
 {
@@ -625,3 +629,101 @@ cell proc_deletedc(const cells& c) {
 //    DeleteDC(hdcPrn);
 //    return bSuccess;
 //}
+cell proc_RegisterDialogClass(const cells& c) {
+    std::string classname = c[0].val;
+    std::string dialogproc = c[1].val;
+    RegisterDialogClass(0, classname, dialogproc);
+    return true_sym;
+}
+
+cell proc_DestroyWindow(const cells& c) {
+    HWND hwnd = para_str_hwnd(c[0].val);
+    DestroyWindow(hwnd);
+    return true_sym;
+}
+cell proc_CreateDialogBox(const cells& c) {
+    CreateDialogBox(0, c[0].val, c[1].val);
+    return true_sym;
+}
+void RegisterDialogClass(HWND hwnd, std::string classname, std::string dialogproc) {
+
+    WNDCLASSEX wc = { 0 };
+    wc.cbSize = sizeof(WNDCLASSEX);
+    wc.lpfnWndProc = (WNDPROC)DialogProc;
+    wc.hInstance = ghInstance;
+    wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
+    wc.lpszClassName = classname.c_str();
+    RegisterClassEx(&wc);
+    setdialogproc(classname, dialogproc);
+
+}
+
+void CreateDialogBox(HWND hwnd, std::string classname, std::string title) {
+    wstring printerName;
+    printerName.assign(title.begin(), title.end());
+    CreateWindowEx(WS_EX_DLGMODALFRAME | WS_EX_TOPMOST, classname.c_str(), (LPCSTR)printerName.c_str(),
+        WS_VISIBLE | WS_SYSMENU | WS_CAPTION, 100, 100, 200, 150,
+        NULL, NULL, ghInstance, NULL);
+}
+
+
+LRESULT CALLBACK DialogProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    std::string str;
+    cell a;
+    try {
+        char className[MAX_PATH];
+        int res = GetClassName(hwnd, className, MAX_PATH);
+        std::string winproc;
+        if (res > 0) {
+            std::string str(&className[0]);
+            winproc = getdialogproc(str);
+        }
+        if (winproc == "")
+            winproc = "dialogproc";
+        str = "(";
+        str += winproc;
+        str += " ";
+        str += para_hwnd_str(hwnd);
+        str += " ";
+        str += std::to_string(message);
+        str += " ";
+        str += std::to_string(wParam);
+        str += " ";
+        str += std::to_string(lParam);
+        str += ")";
+        a = run(str, &global_env);
+        HWND hw = (HWND)((DWORD64)hwnd);
+        /*if (message == WM_PAINT || message == WM_DESTROY) {*/
+        if (message == WM_DESTROY) {
+            return 0;
+        }
+    }
+    catch (std::string msg) {
+        ofstream myFile_Handler;
+        myFile_Handler.open("log.txt", std::ios_base::app);
+        myFile_Handler << msg << endl;
+        myFile_Handler.close();
+        exit(2);        
+    }
+    switch (message) {
+
+        /*case WM_CREATE:
+            CreateWindowW(L"button", L"Ok",
+                WS_VISIBLE | WS_CHILD,
+                50, 50, 80, 25, hwnd, (HMENU)1, NULL, NULL);
+            break;
+
+        case WM_COMMAND:
+            DestroyWindow(hwnd);
+            break;*/
+
+            //case WM_CLOSE:
+            //    DestroyWindow(hwnd);
+            //    break;
+
+    }
+
+    return (DefWindowProcW(hwnd, message, wParam, lParam));
+}
+
