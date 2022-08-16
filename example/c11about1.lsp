@@ -2,7 +2,7 @@
     (load '.\lib\constants.lsp')
     (def dialogcreate(lambda (hwnd)
         (begin            
-            (createbutton hwnd 1 (list 50 50 80 25) )
+            (createbutton hwnd BS_PUSHBUTTON 1 'exit' (list 50 50 80 25) )            
         )                
     ))
     (def dialogcommand(lambda (hwnd)
@@ -10,7 +10,7 @@
             (DestroyWindow hwnd)         
         )                
     ))
-    (define dialogproc(lambda (hwnd msg wp lp )
+    (define dialogproc1(lambda (hwnd msg wp lp )
         (begin
             (if (= WM_DESTROY msg)(quit) )
             (if (= WM_CREATE msg)(dialogcreate hwnd) )
@@ -19,13 +19,13 @@
     ))
     (def docreate(lambda (hwnd)
         (begin
-            (# RegisterDialogClass)
+            (RegisterDialogClass 'dialogclass'  'dialogproc1')
             (createbutton hwnd BS_PUSHBUTTON 1 'show dialog' (list 20 50 95 25) )
         )                
     ))
     (def docommand(lambda (hwnd)
         (begin
-            (CreateDialogBox hwnd 'dialogproc')            
+            (CreateDialogBox 'dialogclass' 'title' hwnd)
         )                
     ))
     (define winproc1(lambda (hwnd msg wp lp )

@@ -2,65 +2,7 @@
 extern  environment global_env;
 extern  PAINTSTRUCT ps;
 extern std::vector<HINSTANCE> apps;
-void add_winglobals(environment& global_env) {
-    global_env["drawtext"] = cell(&proc_drawtext);
-    global_env["app"] = cell(&proc_app);
-    global_env["register"] = cell(&proc_register);
-    global_env["create"] = cell(&proc_create1);
-    global_env["beginpaint"] = cell(&proc_beginpaint);
-    global_env["endpaint"] = cell(&proc_endpaint);
-    global_env["drawtext"] = cell(&proc_drawtext);
-    global_env["line"] = cell(&proc_line);
-    global_env["getclientrect"] = cell(&proc_getclientrect);
-    global_env["quit"] = cell(&proc_quit);
-    global_env["load"] = cell(&proc_load);
-    global_env["textout"] = cell(&proc_textout);
-    global_env["setmapmode"] = cell(&proc_setmapmode);
-    global_env["setwindowextent"] = cell(&proc_setwindowextent);
-    global_env["setviewextent"] = cell(&proc_setviewextent);
-    global_env["setwindowtext"] = cell(&proc_setwindowtext);
-    global_env["lr2dr"] = cell(&proc_lr2dr);
-    global_env["trap"] = cell(&proc_trap);
-    global_env["eval"] = cell(&proc_eval);
-    global_env["gettextmetrics"] = cell(&proc_gettextmetrics);
-    global_env["getsystemmetrics"] = cell(&proc_getsystemmetrics);
-    global_env["lv_create"] = cell(&proc_lv_create);
-    global_env["lv_setcolumns"] = cell(&proc_lv_setcolumns);
-    global_env["lv_appenditem"] = cell(&proc_lv_appenditem);
-    global_env["GetKeyNameText"] = cell(&proc_GetKeyNameText);
-    global_env["createbutton"] = cell(&proc_createbutton);
-    global_env["loword"] = cell(&proc_loword);
-    global_env["hiword"] = cell(&proc_hiword);
-    global_env["createlistbox"] = cell(&proc_createlistbox);
-    global_env["createstatic"] = cell(&proc_createstatic);
-    global_env["ls_getsel"] = cell(&proc_ls_getsel);
-    global_env["GetEnvironmentStrings"] = cell(&proc_GetEnvironmentStrings);
-    global_env["ls_add"] = cell(&proc_ls_add);
-    global_env["tostring"] = cell(&proc_tostring);
-    global_env["invalidaterect"] = cell(&proc_invalidaterect);
-    global_env["rect_xor"] = cell(&proc_rect_xor);
-    global_env["rectangle"] = cell(&proc_rect1);
-    global_env["getsystemmenu"] = cell(&proc_getsystemmenu);
-    global_env["createmenu"] = cell(&proc_createmenu);
-    global_env["setmenu"] = cell(&proc_setmenu);
-    global_env["appendmenu"] = cell(&proc_appendmenu);
-    global_env["moveto"] = cell(&proc_moveto);
-    global_env["lineto"] = cell(&proc_lineto);
-    global_env["savedc"] = cell(&proc_savedc);
-    global_env["restoredc"] = cell(&proc_restoredc);
-    global_env["setlogicalextent"] = cell(&proc_setlogicalextent);
-    global_env["setdeviceextent"] = cell(&proc_setdeviceextent);
-    global_env["setdeviceorigin"] = cell(&proc_setdeviceorigin);
-    global_env["ellipse"] = cell(&proc_ellipse);    
 
-    global_env["getprinterdc"] = cell(&proc_getprinterdc);
-    global_env["getdevicecaps"] = cell(&proc_getdevicecaps);
-    global_env["startdoc"] = cell(&proc_startdoc);
-    global_env["startpage"] = cell(&proc_startpage);
-    global_env["endpage"] = cell(&proc_endpage);
-    global_env["enddoc"] = cell(&proc_enddoc);
-    global_env["deletedc"] = cell(&proc_deletedc);
-}
 cell proc_moveto(const cells& c)
 {
     HDC hdc = para_str_hdc(c[0].val);
@@ -170,6 +112,14 @@ std::map<std::string, std::string > map_of_winproc;
 std::string getwinproc(std::string classname) {
     return map_of_winproc[classname];
 }
+std::map<std::string, std::string > map_of_dialogproc;
+std::string getdialogproc(std::string classname) {
+    return map_of_dialogproc[classname];
+}
+void setdialogproc(std::string classname, std::string dialogproc ) {
+    map_of_dialogproc[classname] = dialogproc;
+}
+
 cell proc_register(const cells& c) {
     long n(atol(c[0].val.c_str()));
     registerclass(apps[n], c[1].val.c_str());
@@ -641,6 +591,7 @@ cell proc_deletedc(const cells& c) {
     DeleteDC(hdc);
     return true_sym;
 }
+
 
 //BOOL PrintMyPage(HWND hwnd)
 //{
