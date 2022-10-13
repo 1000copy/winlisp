@@ -19,10 +19,22 @@
                 (appendmenu hmenu MF_STRING 5 'new hello')
                 (appendmenu hmenubar MF_POPUP hmenu  '&file')
             (set! hmenu (createmenu))
-                (appendmenu hmenu MF_STRING 5 'cut')
-                (appendmenu hmenu MF_STRING 6 'copy')
-                (appendmenu hmenu MF_STRING 7 'post')
+                (appendmenu hmenu MF_STRING 6 'cut')
+                (appendmenu hmenu MF_STRING 7 'copy')
+                (appendmenu hmenu MF_STRING 8 'post')
                 (appendmenu hmenubar MF_POPUP hmenu  '&edit')
+            (setmenu hwnd hmenubar)
+            #t
+        )
+    ))
+    (def newmenu(lambda (hwnd)
+        (begin
+            
+            (set! hmenubar (createmenu))
+            (set! hmenu (createmenu))
+                (appendmenu hmenu MF_STRING 4 'new rect')
+                (appendmenu hmenu MF_STRING 5 'new hello')
+                (appendmenu hmenubar MF_POPUP hmenu  '&file1')            
             (setmenu hwnd hmenubar)
             #t
         )
@@ -38,7 +50,10 @@
             (if (= WM_PAINT msg)(onpaint hwnd ))
             (if (= WM_CREATE msg)(oncreate hwnd msg wp lp) )
             (if (= WM_DESTROY msg)(quit) )
-            (if (= WM_COMMAND msg)(setwindowtext hwnd (loword wp)) )
+            (if (= WM_COMMAND msg)(begin
+                (setwindowtext hwnd (loword wp)) 
+                (if(= 4 (loword wp)) (newmenu hwnd)) 
+            ))
             (if (not (handled msg)) (DefWindowProc hwnd msg wp lp ))            
         )                
     ))

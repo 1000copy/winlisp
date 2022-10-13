@@ -69,6 +69,8 @@ cell proc_not(const cells& c)
         else
             return false_sym;
     }    
+    checksize(c, 1);
+    return false_sym;
 }
 cell proc_or(const cells& c)
 {
@@ -195,7 +197,7 @@ cell run(std::string str, environment* env) {
         return eval(read(str), env);
     
 }
-unsigned int to_base10(const char* d_str, int len, int base)
+unsigned int to_base10(const char* d_str, size_t len, int base)
 {
     if (len < 1) {
         return 0;
@@ -413,4 +415,11 @@ std::string to_string1(const cells& c)
     }
     s += ")";
     return s;
+}
+void checksize(const cells& c, int s) {
+    if (c.size() != s) {
+        std::stringstream buffer;
+        buffer << "parameter size not equal to '" << s << "'";
+        throw buffer.str();
+    }
 }

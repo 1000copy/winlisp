@@ -85,3 +85,4 @@ void add_globals(environment& env);
 std::string to_string(const cell& exp);
 cell eval(cell x, environment* env);
 cell read(const std::string& s);
+void checksize(const cells& c, int s);

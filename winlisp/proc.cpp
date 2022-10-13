@@ -641,9 +641,17 @@ cell proc_DestroyWindow(const cells& c) {
     DestroyWindow(hwnd);
     return true_sym;
 }
+cell  proc_destroymenu(const cells& c) {
+    checksize(c, 1);
+    HMENU h =  para_tohmenu(c[0]);
+    BOOL b = DestroyMenu(h);
+    
+    return TRUE == b?true_sym:false_sym;
+    //return false_sym;
+}
 cell proc_DefWindowProc(const cells& c) {
     UINT m = atoi(c[1].val.c_str());;
-    
+ 
     WPARAM w = para_str_wparam(c[2].val);
     LPARAM l = para_str_lparam(c[3].val);
 

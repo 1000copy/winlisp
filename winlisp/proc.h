@@ -106,4 +106,5 @@ void setdialogproc(std::string, std::string);
 cell proc_RegisterDialogClass(const cells& c);
 cell proc_CreateDialogBox(const cells& c);
 cell proc_DestroyWindow(const cells& c);
+cell  proc_destroymenu(const cells& c);
 cell proc_DefWindowProc(const cells& c);
