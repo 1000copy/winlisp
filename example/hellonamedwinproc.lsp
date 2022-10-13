@@ -14,6 +14,7 @@
         (begin
             (if (= WM_PAINT msg)(onpaint hwnd ))
             (if (= WM_DESTROY msg)(quit) )
+            (DefWindowProc hwnd msg wp lp )
         )                
     ))
     (register (app) 'HelloWin1' 'winproc1')

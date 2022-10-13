@@ -35,6 +35,7 @@
             (if (= WM_CREATE msg)(oncreate hwnd))
             (if (= WM_DESTROY msg)(quit) )
             (if (= WM_COMMAND msg)(oncommand hwnd msg wp lp) )
+            (DefWindowProc hwnd msg wp lp )
         )                
     ))
     (register (app) 'HelloWin1' )

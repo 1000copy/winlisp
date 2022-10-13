@@ -45,6 +45,18 @@ std::string para_ps_str(PAINTSTRUCT* p) {
     os << "'";
     return os.str();
 }
+//太恐怖了，用atoi转换，立刻user32。DefWindowProc报异常，且完全看不懂。
+//WPARAM w = atoll(c[2].val.c_str());//unsigned __int64 
+//LPARAM l = atoll(c[3].val.c_str());//__int64 //long long  = memory bit 64bit = unsigned __int64= __int64  
+WPARAM para_str_wparam(std::string str) {    
+    //return atoll(str.c_str());
+    return _atoi64(str.c_str());
+}
+
+LPARAM para_str_lparam(std::string str) {
+    return atoll(str.c_str());
+
+}
 
 HWND para_str_hwnd(std::string str) {
     DWORD64 n1(_atoi64(str.c_str()));

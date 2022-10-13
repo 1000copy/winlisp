@@ -56,6 +56,10 @@ int main()
     // test(global_env);
     try {
         formdidemo(global_env);
+        TEST("(not #t )", "#f");
+        TEST("(not #f )", "#t");
+        TEST("(or #f #f #t )", "#t");
+        TEST("(or #f #f #f )", "#f");
         TEST("(if #f #t )", "nil");
         TEST("(if #f #t #f)", "#f");
         TEST("(if #f #t #f)", "#f");

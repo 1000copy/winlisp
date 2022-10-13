@@ -61,6 +61,24 @@ cell proc_and(const cells& c)
     }
     return true_sym;    
 }
+cell proc_not(const cells& c)
+{
+    bool b = true;
+    for (cellit i = c.begin(); i != c.end(); ++i) {
+        if (i->type == Symbol && i->val == "#f")return true_sym;
+        else
+            return false_sym;
+    }    
+}
+cell proc_or(const cells& c)
+{
+    bool b = true;
+    for (cellit i = c.begin(); i != c.end(); ++i) {
+        if (i->type == Symbol && i->val == "#t")return true_sym;
+    }
+    return false_sym;
+}
+
 
 cell proc_sub(const cells& c)
 {
@@ -168,6 +186,8 @@ void add_globals(environment& env)
     env["p"] = cell(&proc_p);     
     env["nth"] = cell(&proc_nth);
     env["and"] = cell(&proc_and);    
+    env["not"] = cell(&proc_not);
+    env["or"] = cell(&proc_or);
 }
 
 ////////////////////// eval

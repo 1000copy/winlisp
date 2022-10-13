@@ -75,6 +75,7 @@ void add_winglobals(environment& global_env) {
     global_env["RegisterDialogClass"] = cell(&proc_RegisterDialogClass);
     global_env["CreateDialogBox"] = cell(&proc_CreateDialogBox);
     global_env["DestroyWindow"] = cell(&proc_DestroyWindow);
+    global_env["DefWindowProc"] = cell(&proc_DefWindowProc);
     
 }
 
@@ -156,22 +157,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         cxClient = LOWORD(lParam);
         cyClient = HIWORD(lParam);
         return 0;
-    //case WM_CREATE:
-        /*RegisterDialogClass(hwnd);
-        CreateWindowW(L"button", L"Show dialog",
-            WS_VISIBLE | WS_CHILD,
-            20, 50, 95, 25, hwnd, (HMENU)1, NULL, NULL);
-        break;*/
 
-    case WM_COMMAND:
-        //CreateDialogBox(hwnd);
-        //CreateDialogBox(hwnd);
-        break;
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
+
     }
-    return DefWindowProc(hwnd, message, wParam, lParam);
+    //LRESULT ra = DefWindowProc(hwnd, message, wParam, lParam);
+    LRESULT ra = atoll(a.val.c_str());
+    return ra;
 }
 
 HWND createwindow(HINSTANCE hInstance, std::string app) {
@@ -204,7 +195,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("c11about1.lsp");        
+        std::ifstream t("poormenu2.lsp");
+        //std::ifstream t("c11about1.lsp");        
         //std::ifstream t("hellonamedwinproc.lsp");
         //std::ifstream t("c13print1.lsp");
         //std::ifstream t("poormenu.lsp");

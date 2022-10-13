@@ -20,7 +20,9 @@ cell proc_tostring(const cells& c);
 PAINTSTRUCT* para_str_ps(std::string str);
 void para_str_ps_r(std::string str, PAINTSTRUCT& ps);
 std::string para_ps_str(PAINTSTRUCT* p);
+WPARAM para_str_wparam(std::string str);
 
+LPARAM para_str_lparam(std::string str);
 HWND para_str_hwnd(std::string str);
 std::string para_hwnd_str(HWND  hwnd);
 
@@ -104,3 +106,4 @@ void setdialogproc(std::string, std::string);
 cell proc_RegisterDialogClass(const cells& c);
 cell proc_CreateDialogBox(const cells& c);
 cell proc_DestroyWindow(const cells& c);
+cell proc_DefWindowProc(const cells& c);

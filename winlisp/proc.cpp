@@ -641,6 +641,21 @@ cell proc_DestroyWindow(const cells& c) {
     DestroyWindow(hwnd);
     return true_sym;
 }
+cell proc_DefWindowProc(const cells& c) {
+    UINT m = atoi(c[1].val.c_str());;
+    
+    WPARAM w = para_str_wparam(c[2].val);
+    LPARAM l = para_str_lparam(c[3].val);
+
+    HWND hwnd = para_str_hwnd(c[0].val);
+    LONG_PTR a= DefWindowProc(hwnd, m, w, l);
+    //DefWindowProc(hwnd, 0,0,0);
+    
+    cell cr(Number, std::to_string(a));
+    return cr;
+    //return false_sym;
+}
+
 cell proc_CreateDialogBox(const cells& c) {
     CreateDialogBox(0, c[0].val, c[1].val);
     return true_sym;

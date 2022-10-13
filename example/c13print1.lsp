@@ -63,6 +63,7 @@
             (if (= WM_COMMAND msg)(setwindowtext hwnd (loword wp)) )
             (if (= WM_SYSCOMMAND msg)(if (= wp 1)(onprint hwnd msg wp lp) ))
             (if (= WM_SIZE msg)(onsize hwnd msg wp lp)) 
+            (DefWindowProc hwnd msg wp lp )
         )                
     ))
     (register (app) 'HelloWin1' )
