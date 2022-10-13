@@ -33,9 +33,14 @@ void repl(const std::string& prompt, environment* env)
         std::cout << to_string(eval(read(line), env)) << '\n';
     }
 }
-void test(environment global_env){
-    
-    
+void formdidemo(environment& global_env){
+    TEST("(if #f #t )", "nil");//if返回
+    TEST("(if #f #t #f)", "#f");
+    TEST("(if #f #t #f)", "#f");
+    TEST("(begin(define a(lambda()))(if #t(a)))", "nil");//nil返回
+    TEST("(begin(define a(lambda()#t))(if #t(a)))", "#t");
+    TEST("(begin(define a(lambda()#f))(if #t(a)))", "#f");
+    TEST("(begin(define b(lambda()#t))(define a(lambda()(b)))(if #t(a)))", "#t");//多层调用返回    
 }
 int main()
 {
@@ -50,6 +55,17 @@ int main()
     // repl("90> ", &global_env);
     // test(global_env);
     try {
+        formdidemo(global_env);
+        TEST("(if #f #t )", "nil");
+        TEST("(if #f #t #f)", "#f");
+        TEST("(if #f #t #f)", "#f");
+        TEST("(begin(define a(lambda()))(if #t(a)))", "nil");
+        TEST("(begin(define a(lambda()#t))(if #t(a)))", "#t");
+        TEST("(begin(define a(lambda()#f))(if #t(a)))", "#f");
+        TEST("(begin(define b(lambda()#t))(define a(lambda()(b)))(if #t(a)))", "#t");
+        TEST("(if #f #t )", "nil");
+        TEST("(if #f #t )", "nil");
+        TEST("(if #f #t )", "nil");
         TEST("(def WM_CHAR1 0x0102)", "258"); 
         TEST("((lambda (x) (+ x x)) 5)", "10");
         TEST("(quote (testing 1 (2.0) -3.14e159))", "(testing 1 (2.0) -3.14e159)");
@@ -71,7 +87,6 @@ int main()
         TEST("((repeat1 (repeat1 twice)) 5)", "80");
         TEST("(define fact (lambda (n) (if (<= n 1) 1 (* n (fact (- n 1))))))", "<Lambda>");
         TEST("(fact 3)", "6");
-        //TEST("(fact 50)", "30414093201713378043612608166064768844377641568960512000000000000");
         TEST("(fact 12)", "479001600"); // no bignums; this is as far as we go with 32 bits
         TEST("(define abs (lambda (n) ((if (> n 0) + -) 0 n)))", "<Lambda>");
         TEST("(list (abs -3) (abs 0) (abs 3))", "(3 0 3)");

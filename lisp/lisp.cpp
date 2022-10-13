@@ -288,6 +288,9 @@ cell eval(cell x, environment* env)
                 buffer << to_string1(args);
                 throw buffer.str();
             }
+            if(proc.list.size()<3)
+                return eval(/*no body*/nil, new environment(parms, args, proc.env));
+            else
             return eval(/*body*/proc.list[2], new environment(parms, args, proc.env));
         
         //return eval(/*body*/proc.list[2], new environment(/*parms*/proc.list[1].list, /*args*/exps, proc.env));
