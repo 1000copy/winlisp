@@ -196,7 +196,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     try {
         //auto path = std::filesystem::current_path(); //getting path
         std::filesystem::current_path("..\\example\\"); //setting path
-        std::ifstream t("poormenu2.lsp");
+        std::ifstream t("main.lsp");
+        //std::ifstream t("poormenu2.lsp");
         //std::ifstream t("c11about1.lsp");        
         //std::ifstream t("hellonamedwinproc.lsp");
         //std::ifstream t("c13print1.lsp");
