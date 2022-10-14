@@ -1,4 +1,73 @@
 #include "proc.h"
+// Driver code
+//int main()
+//{
+//    char str[] = "-123";
+//
+//    // Function call
+//    int val = myAtoi(str);
+//    cout << val;
+//    return 0;
+//}
+//
+// A simple atoi() function
+int __atoi(char* str)
+{
+    // Initialize result
+    int res = 0;
+
+    // Initialize sign as positive
+    int sign = 1;
+
+    // Initialize index of first digit
+    int i = 0;
+
+    // If number is negative,
+    // then update sign
+    if (str[0] == '-') {
+        sign = -1;
+
+        // Also update index of first digit
+        i++;
+    }
+
+    // Iterate through all digits
+    // and update the result
+    for (; str[i] != '\0'; i++)
+        res = res * 10 + str[i] - '0';
+
+    // Return result with sign
+    return sign * res;
+}
+__int64 __atoi64(const char* str)
+{
+    // Initialize result
+    __int64 res = 0;
+    __int64  sign = 1;
+    int i = 0;
+    if (str[0] == '-') {
+        sign = -1;
+        i++;
+    }
+    for (; str[i] != '\0'; i++)
+        res = res * 10 + str[i] - '0';
+    return sign * res;
+}
+unsigned __int64 __atoiu64(const char* str)
+{
+    // Initialize result
+    unsigned __int64 res = 0;
+    unsigned __int64 sign = 1;
+    int i = 0;
+    if (str[0] == '-') {
+        sign = -1;
+        i++;
+    }
+    for (; str[i] != '\0'; i++)
+        res = res * 10 + str[i] - '0';
+    return sign * res;
+}
+
 HMENU para_tohmenu(const cell c) {
     return (HMENU)atoll(c.val.c_str());
 }
@@ -46,16 +115,20 @@ std::string para_ps_str(PAINTSTRUCT* p) {
     return os.str();
 }
 //太恐怖了，用atoi转换，立刻user32。DefWindowProc报异常，且完全看不懂。
+//WPARAM ==== unsigned __int64 
+//LPARAM ==== __int64 
+// ...
 //WPARAM w = atoll(c[2].val.c_str());//unsigned __int64 
 //LPARAM l = atoll(c[3].val.c_str());//__int64 //long long  = memory bit 64bit = unsigned __int64= __int64  
 WPARAM para_str_wparam(std::string str) {    
     //return atoll(str.c_str());
-    return _atoi64(str.c_str());
+    //return (WPARAM)_atoi64(str.c_str());
+    return (WPARAM)__atoiu64(str.c_str());
 }
 
 LPARAM para_str_lparam(std::string str) {
-    return atoll(str.c_str());
-
+    //return (LPARAM)atoll(str.c_str());
+    return (LPARAM)__atoi64(str.c_str());
 }
 
 HWND para_str_hwnd(std::string str) {
