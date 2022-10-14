@@ -123,11 +123,14 @@ std::string para_ps_str(PAINTSTRUCT* p) {
 WPARAM para_str_wparam(std::string str) {    
     //return atoll(str.c_str());
     //return (WPARAM)_atoi64(str.c_str());
+    //return (WPARAM)(UINT_PTR)(unsigned __int64)__atoiu64(str.c_str());
     return (WPARAM)__atoiu64(str.c_str());
 }
 
 LPARAM para_str_lparam(std::string str) {
     //return (LPARAM)atoll(str.c_str());
+    //LPARAM LONG_PTR __int64
+    //LPARAM a = (int)__atoi64(str.c_str());
     return (LPARAM)__atoi64(str.c_str());
 }
 
