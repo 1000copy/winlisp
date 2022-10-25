@@ -641,12 +641,21 @@ cell proc_DestroyWindow(const cells& c) {
     DestroyWindow(hwnd);
     return true_sym;
 }
+
+cell  proc_MessageBox(const cells& c) {
+    checksize(c, 4);
+    HWND h = para_str_hwnd(c[0].val);
+    std::string body = c[1].val;
+    std::string title = c[2].val;
+    MessageBox(0,title.c_str(), body.c_str(), MB_OK);
+    return true_sym;
+}
 cell  proc_destroymenu(const cells& c) {
     checksize(c, 1);
-    HMENU h =  para_tohmenu(c[0]);
+    HMENU h = para_tohmenu(c[0]);
     BOOL b = DestroyMenu(h);
-    
-    return TRUE == b?true_sym:false_sym;
+
+    return TRUE == b ? true_sym : false_sym;
     //return false_sym;
 }
 cell proc_DefWindowProc(const cells& c) {

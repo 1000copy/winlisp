@@ -77,7 +77,7 @@ void add_winglobals(environment& global_env) {
     global_env["DestroyWindow"] = cell(&proc_DestroyWindow);
     global_env["DefWindowProc"] = cell(&proc_DefWindowProc);
     global_env["destroymenu"] = cell(&proc_destroymenu);
-    
+    global_env["MessageBox"] = cell(&proc_MessageBox);
 }
 
 
