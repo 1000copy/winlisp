@@ -80,8 +80,24 @@ cell proc_or(const cells& c)
     }
     return false_sym;
 }
-
-
+extern environment global_env;
+cell proc_orl(const cells& c)
+{
+    cell f = eval(c[0], &global_env);
+    long n(atol(f.val.c_str()));
+    for (cellit i = c.begin()+1; i != c.end(); ++i) {
+        n |= atol(i->val.c_str());
+    }
+    return cell(Number, str(n));    
+}
+cell proc_andl(const cells& c)
+{
+    long n(atol(c[0].val.c_str()));
+    for (cellit i = c.begin() + 1; i != c.end(); ++i) {
+        n &= atol(i->val.c_str());
+    }
+    return cell(Number, str(n));
+}
 cell proc_sub(const cells& c)
 {
     long n(atol(c[0].val.c_str()));
@@ -190,6 +206,9 @@ void add_globals(environment& env)
     env["and"] = cell(&proc_and);    
     env["not"] = cell(&proc_not);
     env["or"] = cell(&proc_or);
+    env["orl"] = cell(&proc_orl);
+    env["andl"] = cell(&proc_andl);
+    
 }
 
 ////////////////////// eval
@@ -255,7 +274,7 @@ cell eval(cell x, environment* env)
             size_t count = (x.list.size() - 1) / 2;
             for (int i = 0; i < count; i++) {
                 cell a = x.list[2 * i + 2];
-                (*env)[x.list[2 * i + 1].val] = a;
+                (*env)[x.list[2 * i + 1].val] = eval(a,env);
                 if (i == count - 1)return a;
             }
         }

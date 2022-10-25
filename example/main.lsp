@@ -1,4 +1,5 @@
 (begin
-    (MessageBox 0 'a' 'bcd' 0)    
+    (load '.\lib\constants.lsp')
+    (MessageBox 0  'title' 'your msg' MB_OK)
     (quit)
 )

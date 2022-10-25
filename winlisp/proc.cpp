@@ -647,8 +647,9 @@ cell  proc_MessageBox(const cells& c) {
     HWND h = para_str_hwnd(c[0].val);
     std::string body = c[1].val;
     std::string title = c[2].val;
-    MessageBox(0,title.c_str(), body.c_str(), MB_OK);
-    return true_sym;
+    long a =MessageBox(h,title.c_str(), body.c_str(), atol(c[3].val.c_str()));    
+    cell d(Number,std::to_string(a));
+    return d;
 }
 cell  proc_destroymenu(const cells& c) {
     checksize(c, 1);
