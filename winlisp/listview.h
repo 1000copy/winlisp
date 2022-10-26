@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #pragma comment(lib,"Comctl32.lib")
-HWND CreateListView(HWND, int, RECT);
+HWND CreateListView(HWND, HMENU, RECT);
 void InsertColumn(HWND hList);
 void AppendItem(HWND hList);
 /*

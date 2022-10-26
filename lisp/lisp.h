@@ -6,6 +6,7 @@
 #include <list>
 #include <map>
 #include <assert.h>
+
 //#pragma once
 using namespace std;
 enum cell_type { Symbol, Number, String, List, Proc, Lambda };

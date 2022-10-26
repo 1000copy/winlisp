@@ -1,4 +1,5 @@
 #include "proc.h"
+#include "lchar.h"
 extern  environment global_env;
 extern  PAINTSTRUCT ps;
 extern std::vector<HINSTANCE> apps;
@@ -168,10 +169,12 @@ cell proc_textout(const cells& c)
 cell proc_lv_create(const cells& c)
 {
     HWND hwnd = para_str_hwnd(c[0].val);
-    long base = 1;
+    long base = 1;    
+    
+
     RECT        rect = { 0 };
     para_getrect(c, 1, rect);
-    HWND hList = CreateListView(hwnd, 101, rect);
+    HWND hList = CreateListView(hwnd, (HMENU)101, rect);
     cell result(String, para_hwnd_str(hList));
     return result;
 }
@@ -184,7 +187,7 @@ cell proc_lv_setcolumns(const cells& c)
     for (int i = 0; i < c[1].list.size(); i++) {
         LvCol.cx = atoi(c[2].list[i].val.c_str());
         std::string c1 = c[1].list[i].val;
-        LvCol.pszText = (LPSTR)c1.c_str();
+        LvCol.pszText = (__STR)c1.c_str();
         SendMessage(hList, LVM_INSERTCOLUMN, i, (LPARAM)&LvCol);
     }
     return true_sym;
@@ -257,7 +260,9 @@ cell proc_ls_getsel(const cells& c)
     iLength = GetEnvironmentVariable(pVarName, NULL, 0);
     pVarValue = (TCHAR*)calloc(iLength, sizeof(TCHAR));
     GetEnvironmentVariable(pVarName, pVarValue, iLength);
-
+    if (pVarValue == NULL) {
+        return NULL;
+    }
     std::string str(pVarValue);
     free(pVarName);
     free(pVarValue);
@@ -538,7 +543,7 @@ HDC GetPrinterDC1(void)
     DWORD            dwNeeded, dwReturned;
     HDC              hdc;
     PRINTER_INFO_4* pinfo4;
-    PRINTER_INFO_5* pinfo5;
+    //PRINTER_INFO_5* pinfo5;
 
     if (TRUE)
     {
@@ -739,24 +744,6 @@ LRESULT CALLBACK DialogProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
         myFile_Handler.close();
         exit(2);        
     }
-    switch (message) {
-
-        /*case WM_CREATE:
-            CreateWindowW(L"button", L"Ok",
-                WS_VISIBLE | WS_CHILD,
-                50, 50, 80, 25, hwnd, (HMENU)1, NULL, NULL);
-            break;
-
-        case WM_COMMAND:
-            DestroyWindow(hwnd);
-            break;*/
-
-            //case WM_CLOSE:
-            //    DestroyWindow(hwnd);
-            //    break;
-
-    }
-
     return (DefWindowProcW(hwnd, message, wParam, lParam));
 }
 

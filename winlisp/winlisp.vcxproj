@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lisp\lisp.h" />
+    <ClInclude Include="lchar.h" />
     <ClInclude Include="listview.h" />
     <ClInclude Include="metric.h" />
     <ClInclude Include="proc.h" />

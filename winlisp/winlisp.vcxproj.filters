@@ -47,5 +47,8 @@
     <ClInclude Include="proc.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="lchar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

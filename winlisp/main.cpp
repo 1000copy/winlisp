@@ -6,7 +6,7 @@
 #include "metric.h"
 #include "listview.h"
 #include "proc.h"
-
+#include "lchar.h"
 HINSTANCE ghInstance;
 static TCHAR szAppName[] = TEXT("PoorMenu");
 environment global_env;
@@ -93,7 +93,7 @@ ATOM registerclass(HINSTANCE hInstance, std::string app) {
     wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
     wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
     wndclass.lpszMenuName = NULL;
-    wndclass.lpszClassName = app.c_str();// szAppName;
+    wndclass.lpszClassName = (__CSTR)app.c_str();// szAppName;
     return RegisterClass(&wndclass);
 }
 
@@ -112,7 +112,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 #pragma warning(push, 0)
         
 #pragma warning(pop)
-        char className[MAX_PATH];
+        TCHAR className[MAX_PATH];
         int res = GetClassName(hwnd, className, MAX_PATH);
         std::string winproc;
         if (res > 0) {
@@ -150,7 +150,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     
     static HWND hwndEdit = 0; std::stringstream str1;
     static int   cxClient, cyClient;
-    HDC hdc;
+    //HDC hdc;
     switch (message)
     {       
 
