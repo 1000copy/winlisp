@@ -31,6 +31,10 @@ A sample code which written by WinLisp ,like Charles Petzold's hello window ,is 
 
 more exapmle code see `example\`.
 
+## BUILD
+
+Visual Studio 2022 required
+
 ## known bugs
 
 When the window is maximized, the previously centered text should be displayed in the new position and the text in the original position should disappear, but it doesn't.
