@@ -33,7 +33,7 @@ more exapmle code see `example\`.
 
 ## BUILD
 
-Visual Studio 2022 required
+required Visual Studio 2022 with  std::c++20 
 
 ## known bugs
 
